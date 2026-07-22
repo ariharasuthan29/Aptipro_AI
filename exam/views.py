@@ -722,3 +722,52 @@ def import_excel_questions_view(request):
         return redirect('admin_questions')
         
     return redirect('admin_questions')
+
+
+@login_required
+def submit_practice_view(request):
+    if request.method != 'POST':
+        return redirect('practice')
+        
+    q_ids = request.POST.getlist('question_ids')
+    responses = []
+    correct_count = 0
+    total_count = len(q_ids)
+    
+    for q_id in q_ids:
+        q = get_object_or_404(Question, id=q_id)
+        selected = request.POST.get(f'answer_{q_id}', '')
+        is_correct = (selected == q.correct_option)
+        if is_correct:
+            correct_count += 1
+            
+        responses.append({
+            'question': q,
+            'selected_option': selected,
+            'is_correct': is_correct,
+        })
+        
+    # Calculate percentage
+    pct = round((correct_count / total_count * 100), 1) if total_count > 0 else 0.0
+    
+    # Award points: +2 points per correct answer!
+    profile = request.user.profile
+    points_gained = correct_count * 2
+    profile.points += points_gained
+    profile.save()
+    
+    context = {
+        'responses': responses,
+        'correct_count': correct_count,
+        'total_count': total_count,
+        'percentage': pct,
+        'points_gained': points_gained,
+        'total_points': profile.points,
+    }
+    return render(request, 'practice_result.html', context)
+
+
+
+
+
+

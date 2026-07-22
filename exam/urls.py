@@ -10,6 +10,7 @@ urlpatterns = [
     # Student Module
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('practice/', views.practice_view, name='practice'),
+    path('practice/submit/', views.submit_practice_view, name='submit_practice'),
     path('leaderboard/', views.leaderboard_view, name='leaderboard'),
 
     # Exam Module

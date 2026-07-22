@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %}Daily Practice Results - AptiPro AI{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    <!-- Result Summary Header Card -->
+    <div class="glass-card p-4 p-md-5 mb-4 text-center">
+        <div class="d-inline-flex p-3 rounded-circle {% if percentage >= 60 %}bg-success bg-opacity-10 text-success{% else %}bg-warning bg-opacity-10 text-warning{% endif %} mb-3">
+            <i class="bi {% if percentage >= 60 %}bi-check-circle-fill{% else %}bi-info-circle-fill{% endif %} fs-1"></i>
+        </div>
+        
+        <h2 class="fw-bold mb-1">
+            {% if percentage >= 80 %}
+            <span class="text-success">Excellent Job! 🏆</span>
+            {% elif percentage >= 60 %}
+            <span class="text-primary">Passed Practice Set! 👍</span>
+            {% else %}
+            <span class="text-warning">Needs More Practice</span>
+            {% endif %}
+        </h2>
+        <p class="text-muted mb-4">Daily Practice Drill | Date: {% now "F d, Y H:i" %}</p>
+
+        <!-- Big Metric Cards Grid -->
+        <div class="row g-3 justify-content-center">
+            <div class="col-12 col-md-4">
+                <div class="bg-light p-3 rounded-4 border border-slate-200">
+                    <span class="text-muted small d-block mb-1 fw-semibold">Accuracy Score</span>
+                    <h2 class="fw-bold mb-0 {% if percentage >= 60 %}text-success{% else %}text-danger{% endif %}">
+                        {{ percentage }}%
+                    </h2>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="bg-light p-3 rounded-4 border border-slate-200">
+                    <span class="text-muted small d-block mb-1 fw-semibold">Correct Responses</span>
+                    <h2 class="fw-bold mb-0 text-dark">{{ correct_count }} / {{ total_count }}</h2>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="bg-light p-3 rounded-4 border border-slate-200">
+                    <span class="text-muted small d-block mb-1 fw-semibold">Leaderboard Points Gained</span>
+                    <h2 class="fw-bold mb-0 text-warning"><i class="bi bi-star-fill text-warning me-1"></i> +{{ points_gained }} pts</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question-by-Question Review Section -->
+    <div class="glass-card p-4">
+        <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+            <i class="bi bi-check2-square text-success"></i> Question-by-Question Review
+        </h5>
+
+        {% for r in responses %}
+        <div class="p-3 mb-3 rounded-4 bg-light border {% if r.is_correct %}border-success border-opacity-50{% elif r.selected_option %}border-danger border-opacity-50{% else %}border-slate-200{% endif %}">
+            <div class="d-flex justify-content-between align-items-start mb-2 flex-wrap gap-2">
+                <div>
+                    <span class="badge bg-primary bg-opacity-10 text-primary me-2">Q{{ forloop.counter }}</span>
+                    <span class="badge bg-secondary bg-opacity-10 text-dark me-2">{{ r.question.category.name }}</span>
+                    <span class="badge {% if r.question.difficulty == 'EASY' %}badge-easy{% elif r.question.difficulty == 'MEDIUM' %}badge-medium{% else %}badge-hard{% endif %}">
+                        {{ r.question.get_difficulty_display }}
+                    </span>
+                </div>
+                <div>
+                    {% if r.is_correct %}
+                    <span class="badge bg-success fw-semibold"><i class="bi bi-check-lg"></i> Correct (+2 pts)</span>
+                    {% elif r.selected_option %}
+                    <span class="badge bg-danger fw-semibold"><i class="bi bi-x-lg"></i> Incorrect</span>
+                    {% else %}
+                    <span class="badge bg-secondary fw-semibold">Unanswered</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Question Text -->
+            <h5 class="fw-bold text-dark mb-3">{{ r.question.question_text }}</h5>
+
+            <!-- Rendered Options -->
+            <div class="row g-2 mb-3">
+                <div class="col-12 col-md-6">
+                    <div class="p-2 rounded small d-flex align-items-center gap-2 
+                        {% if r.question.correct_option == 'A' %}bg-success bg-opacity-10 border border-success text-success fw-bold{% elif r.selected_option == 'A' %}bg-danger bg-opacity-10 border border-danger text-danger fw-bold{% else %}bg-white border text-secondary{% endif %}">
+                        <span class="fw-bold">A.</span>
+                        <span>{{ r.question.option_a }}</span>
+                        {% if r.question.correct_option == 'A' %}
+                        <i class="bi bi-check-circle-fill ms-auto text-success"></i>
+                        {% elif r.selected_option == 'A' %}
+                        <i class="bi bi-x-circle-fill ms-auto text-danger"></i>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="p-2 rounded small d-flex align-items-center gap-2 
+                        {% if r.question.correct_option == 'B' %}bg-success bg-opacity-10 border border-success text-success fw-bold{% elif r.selected_option == 'B' %}bg-danger bg-opacity-10 border border-danger text-danger fw-bold{% else %}bg-white border text-secondary{% endif %}">
+                        <span class="fw-bold">B.</span>
+                        <span>{{ r.question.option_b }}</span>
+                        {% if r.question.correct_option == 'B' %}
+                        <i class="bi bi-check-circle-fill ms-auto text-success"></i>
+                        {% elif r.selected_option == 'B' %}
+                        <i class="bi bi-x-circle-fill ms-auto text-danger"></i>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="p-2 rounded small d-flex align-items-center gap-2 
+                        {% if r.question.correct_option == 'C' %}bg-success bg-opacity-10 border border-success text-success fw-bold{% elif r.selected_option == 'C' %}bg-danger bg-opacity-10 border border-danger text-danger fw-bold{% else %}bg-white border text-secondary{% endif %}">
+                        <span class="fw-bold">C.</span>
+                        <span>{{ r.question.option_c }}</span>
+                        {% if r.question.correct_option == 'C' %}
+                        <i class="bi bi-check-circle-fill ms-auto text-success"></i>
+                        {% elif r.selected_option == 'C' %}
+                        <i class="bi bi-x-circle-fill ms-auto text-danger"></i>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="p-2 rounded small d-flex align-items-center gap-2 
+                        {% if r.question.correct_option == 'D' %}bg-success bg-opacity-10 border border-success text-success fw-bold{% elif r.selected_option == 'D' %}bg-danger bg-opacity-10 border border-danger text-danger fw-bold{% else %}bg-white border text-secondary{% endif %}">
+                        <span class="fw-bold">D.</span>
+                        <span>{{ r.question.option_d }}</span>
+                        {% if r.question.correct_option == 'D' %}
+                        <i class="bi bi-check-circle-fill ms-auto text-success"></i>
+                        {% elif r.selected_option == 'D' %}
+                        <i class="bi bi-x-circle-fill ms-auto text-danger"></i>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Explanation solution box -->
+            <div class="p-3 rounded bg-white border text-secondary small">
+                <strong class="text-primary me-1"><i class="bi bi-info-circle"></i> Solution Explanation:</strong> {{ r.question.explanation|default:"No explanation available." }}
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- Navigation Buttons -->
+        <div class="text-center mt-4 gap-2 d-flex justify-content-center">
+            <a href="{% url 'dashboard' %}" class="btn btn-gradient-primary px-4 rounded-pill fw-semibold">Back to Dashboard</a>
+            <a href="{% url 'practice' %}" class="btn btn-outline-primary px-4 rounded-pill fw-semibold">Practice Again</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
