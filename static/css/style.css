@@ -35,6 +35,16 @@ body {
     overflow-x: hidden;
 }
 
+/* Global Full-Width Container & Main Content Overrides */
+.container {
+    max-width: 100% !important;
+}
+
+.main-content {
+    width: 100%;
+    padding: 20px 30px;
+}
+
 /* Headings Typography */
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     color: var(--text-primary) !important;
