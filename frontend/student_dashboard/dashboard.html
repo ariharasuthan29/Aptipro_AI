@@ -3,7 +3,7 @@
 {% block title %}Student Dashboard - AptiPro AI{% endblock %}
 
 {% block content %}
-<div class="container py-4">
+<div class="container-fluid-full py-4">
     <!-- Header Greeting -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom border-slate-200 gap-3">
         <div>
@@ -25,13 +25,13 @@
         <div class="col-6 col-lg-3">
             <div class="glass-card p-3 p-md-4">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="text-muted small fw-semibold">Tests Attempted</span>
+                    <span class="text-muted small fw-semibold">Total Tests</span>
                     <div class="p-2 rounded-circle bg-primary bg-opacity-10">
                         <i class="bi bi-journal-check text-primary fs-5"></i>
                     </div>
                 </div>
-                <h3 class="fw-bold mb-0">{{ total_tests }}</h3>
-                <small class="text-muted">Proctored & Practice</small>
+                <h3 class="fw-bold mb-0 text-dark">{{ total_tests }}</h3>
+                <small class="text-muted">Attempts completed</small>
             </div>
         </div>
         <div class="col-6 col-lg-3">
@@ -49,13 +49,13 @@
         <div class="col-6 col-lg-3">
             <div class="glass-card p-3 p-md-4">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="text-muted small fw-semibold">Highest Score</span>
+                    <span class="text-muted small fw-semibold">Total Points</span>
                     <div class="p-2 rounded-circle bg-success bg-opacity-10">
                         <i class="bi bi-trophy-fill text-success fs-5"></i>
                     </div>
                 </div>
-                <h3 class="fw-bold mb-0 text-success">{{ highest_score }}%</h3>
-                <small class="text-muted">Personal record</small>
+                <h3 class="fw-bold mb-0 text-success">{{ profile.total_points }} pts</h3>
+                <small class="text-muted">Rank booster points</small>
             </div>
         </div>
         <div class="col-6 col-lg-3">
@@ -75,24 +75,24 @@
     <!-- Charts Row -->
     <div class="row g-4 mb-4">
         <!-- Performance Trend Line Chart -->
-        <div class="col-lg-7">
+        <div class="col-lg-8">
             <div class="glass-card p-4 h-100">
                 <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
                     <i class="bi bi-activity text-primary"></i> Exam Score Trend
                 </h5>
-                <div style="position: relative; height: 260px;">
+                <div style="position: relative; height: 280px; width: 100%;">
                     <canvas id="scoreTrendChart"></canvas>
                 </div>
             </div>
         </div>
 
         <!-- Category Accuracy Breakdown -->
-        <div class="col-lg-5">
+        <div class="col-lg-4">
             <div class="glass-card p-4 h-100">
                 <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
                     <i class="bi bi-pie-chart-fill text-indigo"></i> Category Accuracy
                 </h5>
-                <div class="d-flex flex-column gap-3 overflow-auto" style="max-height: 260px;">
+                <div class="d-flex flex-column gap-3 overflow-auto" style="max-height: 280px;">
                     {% for cat in cat_performance %}
                     <div>
                         <div class="d-flex justify-content-between small mb-1">

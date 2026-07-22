@@ -1,4 +1,8 @@
-/* Ultra Clean Light Theme - High Contrast Professional Placement Portal */
+/* ==========================================================================
+   Ultra Clean Light Theme - Fully Responsive Full-Screen CSS
+   Optimized for Laptops, Desktops, Tablets & Mobile Devices
+   ========================================================================== */
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 
 :root {
@@ -16,21 +20,19 @@
     --text-body: #334155;
     --text-muted: #64748b;
     --font-family-base: 'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --sidebar-width: 260px;
 }
 
 body {
     background-color: var(--bg-main);
-    background-image: 
-        radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.04) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(79, 70, 229, 0.04) 0px, transparent 50%);
-    background-attachment: fixed;
     color: var(--text-body);
     font-family: var(--font-family-base);
-    font-size: 1.05rem; /* 17px base font size for ultra readability */
+    font-size: 1.05rem; /* 17px base for readability */
     line-height: 1.6;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
 }
 
 /* Headings Typography */
@@ -38,7 +40,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     color: var(--text-primary) !important;
     font-family: 'Plus Jakarta Sans', var(--font-family-base);
     font-weight: 700;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.4px;
 }
 
 h1, .h1 { font-size: 2.25rem; }
@@ -47,13 +49,28 @@ h3, .h3 { font-size: 1.55rem; }
 h4, .h4 { font-size: 1.35rem; }
 h5, .h5 { font-size: 1.18rem; }
 
-/* Navbar Clean Light Styling */
+/* Remove excessive white space and container constraints */
+.container-fluid-full {
+    width: 100% !important;
+    max-width: none !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+}
+
+@media (max-width: 768px) {
+    .container-fluid-full {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+}
+
+/* Sticky Navbar */
 .navbar-clean {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--bg-card-border);
-    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
 }
 
 .brand-gradient {
@@ -61,45 +78,85 @@ h5, .h5 { font-size: 1.18rem; }
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: 800;
-    font-size: 1.4rem;
+    font-size: 1.45rem;
     letter-spacing: -0.5px;
 }
 
-.nav-link {
-    color: #475569 !important;
-    font-weight: 600;
-    font-size: 1.0rem;
-    transition: color 0.2s ease;
-}
-
-.nav-link:hover, .nav-link.active {
-    color: var(--accent-primary) !important;
-}
-
-/* Clean White Cards with Soft Shadow */
+/* Modern Cards */
 .glass-card {
     background: var(--bg-card);
-    border: 1px solid var(--bg-card-border);
+    border: 1.5px solid var(--bg-card-border);
     border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .glass-card:hover {
     border-color: #cbd5e1;
-    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
 }
 
-/* HIGH CONTRAST FORM CONTROLS (16px-18px Fonts) */
+/* ==========================================================================
+   Split-Screen Login Layout
+   ========================================================================== */
+.split-screen-container {
+    min-height: 100vh;
+    display: flex;
+}
+
+.split-left {
+    flex: 1.2;
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.split-left::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -20%;
+    width: 60%;
+    height: 60%;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    filter: blur(40px);
+}
+
+.split-right {
+    flex: 1;
+    background: var(--bg-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+}
+
+@media (max-width: 992px) {
+    .split-left {
+        display: none; /* Hide illustration side on mobile & tablet */
+    }
+    .split-screen-container {
+        justify-content: center;
+        align-items: center;
+    }
+    .split-right {
+        width: 100%;
+        padding: 1.5rem;
+    }
+}
+
+/* Form Styling */
 .form-label {
     color: var(--text-primary) !important;
-    font-size: 1.0rem !important; /* 16px */
+    font-size: 1.0rem !important;
     font-weight: 600 !important;
     margin-bottom: 6px;
-}
-
-.text-muted {
-    color: var(--text-muted) !important;
 }
 
 .form-control, .form-select {
@@ -107,19 +164,12 @@ h5, .h5 { font-size: 1.18rem; }
     color: var(--text-primary) !important;
     border: 1.5px solid #cbd5e1 !important;
     border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 1.05rem !important; /* 17px */
+    padding: 11px 15px;
+    font-size: 1.05rem !important;
     font-weight: 500;
-    box-shadow: none !important;
-}
-
-.form-control::placeholder {
-    color: #94a3b8 !important;
 }
 
 .form-control:focus, .form-select:focus {
-    background-color: #ffffff !important;
-    color: var(--text-primary) !important;
     border-color: var(--accent-primary) !important;
     box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15) !important;
 }
@@ -132,45 +182,107 @@ h5, .h5 { font-size: 1.18rem; }
     font-weight: 600;
     font-size: 1.05rem;
     border-radius: 10px;
-    padding: 10px 24px;
+    padding: 11px 24px;
     transition: all 0.2s ease;
 }
 
 .btn-gradient-primary:hover {
     background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
 }
 
-.btn-gradient-success {
-    background: linear-gradient(135deg, #059669 0%, #047857 100%);
-    color: white !important;
-    border: none;
+/* ==========================================================================
+   Admin Sidebar Navigation Layout
+   ========================================================================== */
+.admin-wrapper {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.admin-sidebar {
+    width: var(--sidebar-width);
+    background: #ffffff;
+    border-right: 1.5px solid var(--bg-card-border);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.5rem;
+    transition: all 0.2s ease;
+}
+
+.admin-content {
+    flex-grow: 1;
+    background: var(--bg-main);
+    padding: 2.5rem;
+    overflow-x: hidden;
+}
+
+.sidebar-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: #475569;
     font-weight: 600;
+    text-decoration: none;
     border-radius: 10px;
+    transition: all 0.2s ease;
+    margin-bottom: 8px;
 }
 
-.btn-gradient-danger {
-    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-    color: white !important;
-    border: none;
-    font-weight: 600;
-    border-radius: 10px;
+.sidebar-nav-link:hover, .sidebar-nav-link.active {
+    background: rgba(37, 99, 235, 0.08);
+    color: var(--accent-primary);
 }
 
-/* Exam Room & MCQ Option Cards (Large 18px Text) */
+@media (max-width: 992px) {
+    .admin-wrapper {
+        flex-direction: column;
+    }
+    .admin-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1.5px solid var(--bg-card-border);
+        padding: 1rem 1.5rem;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+    }
+    .sidebar-nav-link {
+        margin-bottom: 0;
+        padding: 8px 12px;
+    }
+    .admin-content {
+        padding: 1.5rem 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .admin-sidebar {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+}
+
+/* ==========================================================================
+   Exam & Practice Options Grid (Large 18px / 21px Text)
+   ========================================================================== */
 .option-card {
-    background: #f8fafc;
+    background: #ffffff;
     border: 2px solid #e2e8f0;
     border-radius: 14px;
-    padding: 16px 20px;
+    padding: 18px 22px;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     gap: 16px;
-    font-size: 1.1rem; /* 18px Option text size */
+    font-size: 1.15rem; /* 18px+ text */
     font-weight: 500;
     color: var(--text-primary);
+    width: 100%;
+    min-height: 56px;
 }
 
 .option-card:hover {
@@ -181,20 +293,21 @@ h5, .h5 { font-size: 1.18rem; }
 .option-card.selected {
     background: #eff6ff;
     border-color: var(--accent-primary);
-    box-shadow: 0 0 16px rgba(37, 99, 235, 0.2);
+    box-shadow: 0 0 16px rgba(37, 99, 235, 0.15);
 }
 
 .option-letter {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     background: #e2e8f0;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     color: var(--text-primary);
+    flex-shrink: 0;
 }
 
 .option-card.selected .option-letter {
@@ -202,7 +315,7 @@ h5, .h5 { font-size: 1.18rem; }
     color: white;
 }
 
-/* Exam Timer Box */
+/* Exam Timer Display Box */
 .timer-box {
     background: #fef2f2;
     border: 1.5px solid #fca5a5;
@@ -217,7 +330,7 @@ h5, .h5 { font-size: 1.18rem; }
     gap: 8px;
 }
 
-/* Webcam Frame Box */
+/* Camera Overlay */
 .proctor-camera-container {
     position: relative;
     width: 220px;
@@ -250,7 +363,7 @@ h5, .h5 { font-size: 1.18rem; }
     gap: 4px;
 }
 
-/* Question Palette Grid Buttons */
+/* Palette Grid */
 .q-grid-btn {
     width: 42px;
     height: 42px;
@@ -301,4 +414,17 @@ h5, .h5 { font-size: 1.18rem; }
     border-bottom: 1px solid #e2e8f0;
     vertical-align: middle;
     font-size: 1.0rem;
+}
+
+/* Responsive Overrides */
+@media (max-width: 576px) {
+    .option-card {
+        font-size: 1.05rem;
+        padding: 12px 16px;
+    }
+    .option-letter {
+        width: 32px;
+        height: 32px;
+        font-size: 1.0rem;
+    }
 }

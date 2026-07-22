@@ -15,10 +15,37 @@
             -moz-user-select: none;
             -ms-user-select: none;
             background-color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        /* Sticky Progress Bar at absolute top of window */
+        .sticky-progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            z-index: 2000;
+        }
+        .sticky-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #8b5cf6);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        /* Header offset for sticky progress bar */
+        header.navbar-clean {
+            margin-top: 6px;
         }
     </style>
 </head>
-<body class="min-vh-100 d-flex flex-direction-column">
+<body>
+
+    <!-- Sticky Progress Bar at the top of the viewport -->
+    <div class="sticky-progress-container">
+        <div class="sticky-progress-bar" id="examProgressBar"></div>
+    </div>
 
     <!-- Exam Header Bar -->
     <header class="navbar-clean py-2 px-3 border-bottom sticky-top bg-white">
@@ -30,7 +57,7 @@
                 </span>
             </div>
 
-            <!-- Countdown Timer Display -->
+            <!-- Countdown Timer Display & Warn Status -->
             <div class="d-flex align-items-center gap-3">
                 <div class="timer-box" id="timerDisplay">
                     <i class="bi bi-clock-history"></i> <span id="countdownText">60:00</span>
@@ -47,12 +74,12 @@
         </div>
     </header>
 
-    <!-- Main Exam Interface Body -->
-    <div class="container-fluid py-4 flex-grow-1">
+    <!-- Main Exam Interface Body (Fluid Full-Width) -->
+    <div class="container-fluid-full py-4 flex-grow-1">
         <div class="row g-4">
             
             <!-- Left Panel: Active Question Card -->
-            <div class="col-lg-8 col-xl-9">
+            <div class="col-lg-8 col-xl-9 col-12">
                 <div class="glass-card p-4 p-md-5 min-vh-75 d-flex flex-column justify-content-between">
                     <div>
                         <!-- Question Header -->
@@ -61,11 +88,11 @@
                                 <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-20 fs-6 fw-semibold" id="qCategoryBadge">Category</span>
                                 <span class="badge bg-secondary bg-opacity-10 text-dark border border-secondary border-opacity-20 ms-2 fw-semibold" id="qDiffBadge">Difficulty</span>
                             </div>
-                            <span class="fw-bold text-muted" id="qNumberTitle">Question 1 of 40</span>
+                            <span class="fw-bold text-muted animate-pulse" id="qNumberTitle">Question 1 of 40</span>
                         </div>
 
                         <!-- Question Text (Large 21px Font) -->
-                        <h3 class="fw-bold mb-4 text-dark" id="qTextDisplay" style="font-size: 1.35rem;">Loading question...</h3>
+                        <h3 class="fw-bold mb-4 text-dark" id="qTextDisplay" style="font-size: 1.35rem; line-height: 1.5;">Loading question...</h3>
                         
                         <!-- Code Snippet Display -->
                         <div class="d-none mb-4" id="qCodeSnippetBox">
@@ -74,25 +101,25 @@
 
                         <!-- Options List (Large 18px Text Cards) -->
                         <div class="row g-3" id="optionsContainer">
-                            <div class="col-md-6">
+                            <div class="col-md-6 col-12">
                                 <div class="option-card" onclick="selectOption('A')">
                                     <div class="option-letter">A</div>
                                     <div class="flex-grow-1 text-dark" id="optAText">Option A</div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6 col-12">
                                 <div class="option-card" onclick="selectOption('B')">
                                     <div class="option-letter">B</div>
                                     <div class="flex-grow-1 text-dark" id="optBText">Option B</div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6 col-12">
                                 <div class="option-card" onclick="selectOption('C')">
                                     <div class="option-letter">C</div>
                                     <div class="flex-grow-1 text-dark" id="optCText">Option C</div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6 col-12">
                                 <div class="option-card" onclick="selectOption('D')">
                                     <div class="option-letter">D</div>
                                     <div class="flex-grow-1 text-dark" id="optDText">Option D</div>
@@ -102,7 +129,7 @@
                     </div>
 
                     <!-- Bottom Nav Controls -->
-                    <div class="d-flex justify-content-between align-items-center pt-4 border-top border-slate-200 mt-4">
+                    <div class="d-flex justify-content-between align-items-center pt-4 border-top border-slate-200 mt-4 flex-wrap gap-2">
                         <button class="btn btn-outline-secondary px-4 rounded-pill fw-semibold" id="prevBtn" onclick="navigateQuestion(-1)">
                             <i class="bi bi-arrow-left me-1"></i> Previous
                         </button>
@@ -117,7 +144,7 @@
             </div>
 
             <!-- Right Panel: Live Camera & Question Palette Grid -->
-            <div class="col-lg-4 col-xl-3">
+            <div class="col-lg-4 col-xl-3 col-12">
                 <div class="d-flex flex-column gap-3">
                     
                     <!-- Live Webcam Stream Card -->
@@ -250,6 +277,7 @@
             document.getElementById('nextBtn').innerText = (index === responsesData.length - 1) ? 'Finish' : 'Next';
 
             highlightActivePaletteBtn();
+            updateProgressBar();
         }
 
         function selectOption(letter) {
@@ -329,6 +357,12 @@
         function updateAnsweredBadge() {
             const count = responsesData.filter(r => Boolean(r.selected)).length;
             document.getElementById('answeredCountBadge').innerText = `${count} / ${responsesData.length}`;
+        }
+
+        function updateProgressBar() {
+            const count = responsesData.filter(r => Boolean(r.selected)).length;
+            const pct = (count / responsesData.length) * 100;
+            document.getElementById('examProgressBar').style.width = `${pct}%`;
         }
 
         function startTimer() {

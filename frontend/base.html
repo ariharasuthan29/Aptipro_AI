@@ -17,8 +17,8 @@
 <body>
 
     <!-- Ultra Clean Light Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light navbar-clean bg-white sticky-top py-3">
-        <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light navbar-clean sticky-top py-3">
+        <div class="container-fluid px-md-5">
             <a class="navbar-brand d-flex align-items-center gap-2" href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'login' %}{% endif %}">
                 <i class="bi bi-shield-check text-primary fs-3"></i>
                 <span class="brand-gradient fs-4">AptiPro AI</span>
@@ -78,7 +78,7 @@
     </nav>
 
     <!-- Dynamic Toast / Alerts -->
-    <div class="container mt-3">
+    <div class="container-fluid mt-3 px-md-5 px-3">
         {% if messages %}
         {% for message in messages %}
         <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show glass-card mb-2 shadow-sm" role="alert">
@@ -97,7 +97,7 @@
 
     <!-- Footer -->
     <footer class="mt-auto py-4 bg-white border-top border-slate-200 text-center text-muted fs-7">
-        <div class="container">
+        <div class="container-fluid px-md-5">
             <p class="mb-0 fw-medium">AI-Based Secure Online Aptitude Preparation & Examination System &copy; 2026. All rights reserved.</p>
         </div>
     </footer>

@@ -3,7 +3,7 @@
 {% block title %}Student Leaderboard & Rankings - AptiPro AI{% endblock %}
 
 {% block content %}
-<div class="container py-4">
+<div class="container-fluid-full py-4">
     <!-- Header -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom border-slate-200 gap-3">
         <div>
@@ -23,7 +23,7 @@
     {% if leaderboard|length >= 3 %}
     <div class="row g-3 justify-content-center mb-5 align-items-end">
         <!-- 2nd Place -->
-        <div class="col-md-4 col-lg-3 order-2 order-md-1">
+        <div class="col-12 col-md-4 col-lg-3 order-2 order-md-1">
             <div class="glass-card p-4 text-center border-slate-300">
                 <div class="display-6 text-secondary mb-2"><i class="bi bi-award-fill"></i></div>
                 <span class="badge bg-secondary mb-2 px-3 py-1 fw-semibold">2nd Rank</span>
@@ -34,7 +34,7 @@
         </div>
 
         <!-- 1st Place (Gold) -->
-        <div class="col-md-4 col-lg-3 order-1 order-md-2">
+        <div class="col-12 col-md-4 col-lg-3 order-1 order-md-2 mb-3 mb-md-0">
             <div class="glass-card p-4 text-center border-warning shadow-lg" style="transform: scale(1.05);">
                 <div class="display-5 text-warning mb-2"><i class="bi bi-trophy-fill"></i></div>
                 <span class="badge bg-warning text-dark fw-bold mb-2 px-3 py-1">🥇 1st Rank Champion</span>
@@ -45,7 +45,7 @@
         </div>
 
         <!-- 3rd Place -->
-        <div class="col-md-4 col-lg-3 order-3">
+        <div class="col-12 col-md-4 col-lg-3 order-3">
             <div class="glass-card p-4 text-center border-danger border-opacity-30">
                 <div class="display-6 text-danger mb-2"><i class="bi bi-award-fill"></i></div>
                 <span class="badge bg-danger bg-opacity-10 text-danger mb-2 px-3 py-1 fw-semibold">3rd Rank</span>

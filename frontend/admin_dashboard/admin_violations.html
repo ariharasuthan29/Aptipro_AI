@@ -3,71 +3,91 @@
 {% block title %}Security & Violation Audit Logs - Admin Panel{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-slate-200">
-        <div>
-            <h2 class="fw-bold mb-1"><i class="bi bi-shield-alert text-danger me-2"></i> Security & Violation Audit Inspector</h2>
-            <p class="text-muted mb-0">Review all captured webcam frames, tab switches, and proctoring events.</p>
+<div class="admin-wrapper">
+    <!-- Left Sidebar Navigation -->
+    <aside class="admin-sidebar">
+        <h5 class="fw-bold mb-4 text-primary px-3"><i class="bi bi-shield-lock-fill me-2"></i> Admin Panel</h5>
+        
+        <nav class="d-flex flex-column w-100">
+            <a href="{% url 'admin_dashboard' %}" class="sidebar-nav-link">
+                <i class="bi bi-speedometer2"></i> Overview Dashboard
+            </a>
+            <a href="{% url 'admin_questions' %}" class="sidebar-nav-link">
+                <i class="bi bi-card-checklist"></i> Manage Question Bank
+            </a>
+            <a href="{% url 'admin_violations' %}" class="sidebar-nav-link active">
+                <i class="bi bi-camera-video"></i> Security & Violations
+            </a>
+            <a href="{% url 'export_sample_excel_template' %}" class="sidebar-nav-link text-success">
+                <i class="bi bi-file-earmark-excel"></i> Download Excel Template
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Right Main Content Area -->
+    <main class="admin-content">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-slate-200">
+            <div>
+                <h2 class="fw-bold mb-1"><i class="bi bi-shield-alert text-danger me-2"></i> Security & Violation Audit Inspector</h2>
+                <p class="text-muted mb-0">Review all captured webcam snapshots, browser focus shifts, and tab switches.</p>
+            </div>
         </div>
 
-        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary rounded-pill fw-semibold">
-            <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
-        </a>
-    </div>
-
-    <!-- Violations Table -->
-    <div class="glass-card p-4">
-        <div class="table-responsive">
-            <table class="table table-hover table-clean align-middle mb-0">
-                <thead>
-                    <tr>
-                        <th>Date & Time</th>
-                        <th>Student Name</th>
-                        <th>Violation Type</th>
-                        <th>Warning Level</th>
-                        <th>Details</th>
-                        <th>Captured Frame</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for v in violations %}
-                    <tr>
-                        <td>{{ v.timestamp|date:"M d, Y H:i:s" }}</td>
-                        <td>
-                            <span class="fw-bold text-dark">{{ v.user.username }}</span>
-                        </td>
-                        <td>
-                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-30">
-                                {{ v.get_violation_type_display }}
-                            </span>
-                        </td>
-                        <td>
-                            <span class="badge bg-warning bg-opacity-20 text-warning">
-                                Strike {{ v.warning_level }} of 3
-                            </span>
-                        </td>
-                        <td class="small text-muted">{{ v.details }}</td>
-                        <td>
-                            {% if v.snapshot %}
-                            <a href="{{ v.snapshot.url }}" target="_blank" class="btn btn-sm btn-outline-danger rounded-pill fw-semibold">
-                                <i class="bi bi-camera-fill me-1"></i> View Frame
-                            </a>
-                            {% else %}
-                            <span class="text-muted small">No Image</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="6" class="text-center py-4 text-muted">
-                            <i class="bi bi-shield-check fs-1 text-success d-block mb-2"></i>
-                            No security violations recorded in the database.
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <!-- Violations Table -->
+        <div class="glass-card p-4">
+            <div class="table-responsive">
+                <table class="table table-hover table-clean align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Student Name</th>
+                            <th>Violation Type</th>
+                            <th>Warning Level</th>
+                            <th>Details</th>
+                            <th>Captured Frame</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for v in violations %}
+                        <tr>
+                            <td>{{ v.timestamp|date:"M d, Y H:i:s" }}</td>
+                            <td>
+                                <span class="fw-bold text-dark">{{ v.user.username }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-30">
+                                    {{ v.get_violation_type_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-warning bg-opacity-20 text-warning">
+                                    Strike {{ v.warning_level }} of 3
+                                </span>
+                            </td>
+                            <td class="small text-muted">{{ v.details }}</td>
+                            <td>
+                                {% if v.snapshot %}
+                                <a href="{{ v.snapshot.url }}" target="_blank" class="btn btn-sm btn-outline-danger rounded-pill fw-semibold">
+                                    <i class="bi bi-camera-fill me-1"></i> View Frame
+                                </a>
+                                {% else %}
+                                <span class="text-muted small">No Image</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">
+                                <i class="bi bi-shield-check fs-1 text-success d-block mb-2"></i>
+                                No security violations recorded in the database.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
+    </main>
 </div>
 {% endblock %}

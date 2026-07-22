@@ -3,99 +3,118 @@
 {% block title %}Manage Question Bank - Admin Panel{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <!-- Header -->
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom border-slate-200 gap-3">
-        <div>
-            <h2 class="fw-bold mb-1"><i class="bi bi-card-checklist text-primary me-2"></i> Question Bank Manager</h2>
-            <p class="text-muted mb-0">Total Questions in Bank: <strong>{{ questions|length }}</strong></p>
-        </div>
-
-        <div class="d-flex gap-2">
-            <button type="button" class="btn btn-gradient-primary rounded-pill px-3 fw-semibold" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
-                <i class="bi bi-plus-lg me-1"></i> Add Single Question
-            </button>
-            <a href="{% url 'export_sample_excel_template' %}" class="btn btn-outline-success rounded-pill px-3 fw-semibold">
-                <i class="bi bi-file-earmark-excel me-1"></i> Excel Template
+<div class="admin-wrapper">
+    <!-- Left Sidebar Navigation -->
+    <aside class="admin-sidebar">
+        <h5 class="fw-bold mb-4 text-primary px-3"><i class="bi bi-shield-lock-fill me-2"></i> Admin Panel</h5>
+        
+        <nav class="d-flex flex-column w-100">
+            <a href="{% url 'admin_dashboard' %}" class="sidebar-nav-link">
+                <i class="bi bi-speedometer2"></i> Overview Dashboard
             </a>
-            <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary rounded-pill fw-semibold">Back</a>
-        </div>
-    </div>
+            <a href="{% url 'admin_questions' %}" class="sidebar-nav-link active">
+                <i class="bi bi-card-checklist"></i> Manage Question Bank
+            </a>
+            <a href="{% url 'admin_violations' %}" class="sidebar-nav-link">
+                <i class="bi bi-camera-video"></i> Security & Violations
+            </a>
+            <a href="{% url 'export_sample_excel_template' %}" class="sidebar-nav-link text-success">
+                <i class="bi bi-file-earmark-excel"></i> Download Excel Template
+            </a>
+        </nav>
+    </aside>
 
-    <!-- Filter & Search Bar -->
-    <div class="glass-card p-3 mb-4">
-        <form method="GET" class="row g-2 align-items-center">
-            <div class="col-md-4">
-                <input type="text" name="search" value="{{ search_q }}" class="form-control" placeholder="Search question text or category...">
+    <!-- Right Main Content Area -->
+    <main class="admin-content">
+        <!-- Header -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom border-slate-200 gap-3">
+            <div>
+                <h2 class="fw-bold mb-1">Question Bank Pool</h2>
+                <p class="text-muted mb-0">Total Questions in Bank: <strong>{{ questions|length }}</strong></p>
             </div>
-            <div class="col-md-3">
-                <select name="category" class="form-select">
-                    <option value="">-- All Categories --</option>
-                    {% for cat in categories %}
-                    <option value="{{ cat.id }}" {% if selected_category == cat.id|stringformat:"i" %}selected{% endif %}>{{ cat.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col-md-3">
-                <select name="difficulty" class="form-select">
-                    <option value="">-- All Difficulty Levels --</option>
-                    <option value="EASY" {% if selected_difficulty == 'EASY' %}selected{% endif %}>Easy</option>
-                    <option value="MEDIUM" {% if selected_difficulty == 'MEDIUM' %}selected{% endif %}>Medium</option>
-                    <option value="HARD" {% if selected_difficulty == 'HARD' %}selected{% endif %}>Hard</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100 fw-semibold"><i class="bi bi-search me-1"></i> Search</button>
-            </div>
-        </form>
-    </div>
 
-    <!-- Questions Table -->
-    <div class="glass-card p-4">
-        <div class="table-responsive">
-            <table class="table table-hover table-clean align-middle mb-0">
-                <thead>
-                    <tr>
-                        <th style="width: 5%;">#</th>
-                        <th style="width: 20%;">Category</th>
-                        <th style="width: 10%;">Difficulty</th>
-                        <th style="width: 40%;">Question Text</th>
-                        <th style="width: 10%;">Correct</th>
-                        <th style="width: 15%;" class="text-end">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for q in questions %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td><span class="badge bg-primary bg-opacity-10 text-primary fw-semibold">{{ q.category.name }}</span></td>
-                        <td>
-                            <span class="badge {% if q.difficulty == 'EASY' %}badge-easy{% elif q.difficulty == 'MEDIUM' %}badge-medium{% else %}badge-hard{% endif %}">
-                                {{ q.get_difficulty_display }}
-                            </span>
-                        </td>
-                        <td class="text-truncate fw-medium text-dark" style="max-width: 300px;">{{ q.question_text }}</td>
-                        <td><span class="badge bg-success fw-semibold">Option {{ q.correct_option }}</span></td>
-                        <td class="text-end">
-                            <form method="POST" class="d-inline" onsubmit="return confirm('Delete this question permanently?');">
-                                {% csrf_token %}
-                                <input type="hidden" name="action" value="delete">
-                                <input type="hidden" name="question_id" value="{{ q.id }}">
-                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle p-2">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="6" class="text-center py-4 text-muted">No questions found matching the filter criteria.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-gradient-primary rounded-pill px-3 fw-semibold" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
+                    <i class="bi bi-plus-lg me-1"></i> Add Single Question
+                </button>
+            </div>
         </div>
-    </div>
+
+        <!-- Filter & Search Bar -->
+        <div class="glass-card p-3 mb-4">
+            <form method="GET" class="row g-2 align-items-center">
+                <div class="col-12 col-md-4">
+                    <input type="text" name="search" value="{{ search_q }}" class="form-control" placeholder="Search question text or category...">
+                </div>
+                <div class="col-12 col-md-3">
+                    <select name="category" class="form-select">
+                        <option value="">-- All Categories --</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat.id }}" {% if selected_category == cat.id|stringformat:"i" %}selected{% endif %}>{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-12 col-md-3">
+                    <select name="difficulty" class="form-select">
+                        <option value="">-- All Difficulty Levels --</option>
+                        <option value="EASY" {% if selected_difficulty == 'EASY' %}selected{% endif %}>Easy</option>
+                        <option value="MEDIUM" {% if selected_difficulty == 'MEDIUM' %}selected{% endif %}>Medium</option>
+                        <option value="HARD" {% if selected_difficulty == 'HARD' %}selected{% endif %}>Hard</option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-2">
+                    <button type="submit" class="btn btn-primary w-100 fw-semibold"><i class="bi bi-search me-1"></i> Search</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Questions Table -->
+        <div class="glass-card p-4">
+            <div class="table-responsive">
+                <table class="table table-hover table-clean align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 20%;">Category</th>
+                            <th style="width: 10%;">Difficulty</th>
+                            <th style="width: 40%;">Question Text</th>
+                            <th style="width: 10%;">Correct</th>
+                            <th style="width: 15%;" class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for q in questions %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><span class="badge bg-primary bg-opacity-10 text-primary fw-semibold">{{ q.category.name }}</span></td>
+                            <td>
+                                <span class="badge {% if q.difficulty == 'EASY' %}badge-easy{% elif q.difficulty == 'MEDIUM' %}badge-medium{% else %}badge-hard{% endif %}">
+                                    {{ q.get_difficulty_display }}
+                                </span>
+                            </td>
+                            <td class="text-truncate fw-medium text-dark" style="max-width: 300px;">{{ q.question_text }}</td>
+                            <td><span class="badge bg-success fw-semibold">Option {{ q.correct_option }}</span></td>
+                            <td class="text-end">
+                                <form method="POST" class="d-inline" onsubmit="return confirm('Delete this question permanently?');">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="question_id" value="{{ q.id }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle p-2">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">No questions found matching the filter criteria.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
 </div>
 
 <!-- Add Single Question Modal -->
@@ -111,7 +130,7 @@
                 <input type="hidden" name="action" value="add">
                 <div class="modal-body">
                     <div class="row mb-3">
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-12">
                             <label class="form-label fw-semibold">Category</label>
                             <select name="category" class="form-select" required>
                                 {% for cat in categories %}
@@ -119,7 +138,7 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-12">
                             <label class="form-label fw-semibold">Difficulty Level</label>
                             <select name="difficulty" class="form-select" required>
                                 <option value="EASY">Easy</option>
@@ -135,26 +154,26 @@
                     </div>
 
                     <div class="row g-3 mb-3">
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-12">
                             <label class="form-label fw-semibold">Option A</label>
                             <input type="text" name="option_a" class="form-control" placeholder="Option A text" required>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-12">
                             <label class="form-label fw-semibold">Option B</label>
                             <input type="text" name="option_b" class="form-control" placeholder="Option B text" required>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-12">
                             <label class="form-label fw-semibold">Option C</label>
                             <input type="text" name="option_c" class="form-control" placeholder="Option C text" required>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-12">
                             <label class="form-label fw-semibold">Option D</label>
                             <input type="text" name="option_d" class="form-control" placeholder="Option D text" required>
                         </div>
                     </div>
 
                     <div class="row mb-3">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-12">
                             <label class="form-label fw-semibold">Correct Option</label>
                             <select name="correct_option" class="form-select" required>
                                 <option value="A">Option A</option>
@@ -163,7 +182,7 @@
                                 <option value="D">Option D</option>
                             </select>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-8 col-12">
                             <label class="form-label fw-semibold">Solution Explanation</label>
                             <input type="text" name="explanation" class="form-control" placeholder="Detailed answer explanation...">
                         </div>

@@ -3,67 +3,64 @@
 {% block title %}Student Registration - AptiPro AI{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center align-items-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="glass-card p-4 p-md-5 shadow">
-                <div class="text-center mb-4">
-                    <div class="d-inline-flex p-3 rounded-circle bg-primary bg-opacity-10 mb-3">
-                        <i class="bi bi-person-plus-fill text-primary fs-2"></i>
-                    </div>
-                    <h3 class="fw-bold mb-1">Student Registration</h3>
-                    <p class="text-muted small">Prepare for placement exams with AI proctoring</p>
+<div class="container-fluid-full py-5 d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+    <div class="glass-card p-4 p-md-5 shadow-lg w-100" style="max-width: 750px;">
+        <div class="text-center mb-4">
+            <div class="d-inline-flex p-3 rounded-circle bg-primary bg-opacity-10 mb-3">
+                <i class="bi bi-person-plus-fill text-primary fs-2"></i>
+            </div>
+            <h3 class="fw-bold mb-1">Student Registration</h3>
+            <p class="text-muted small">Prepare for placement exams with AI proctoring</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="row g-3">
+                <!-- Two-column row 1 -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Username</label>
+                    <input type="text" name="username" class="form-control" placeholder="Enter username" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Email Address</label>
+                    <input type="email" name="email" class="form-control" placeholder="student@univ.edu">
                 </div>
 
-                <form method="POST">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Username</label>
-                            <input type="text" name="username" class="form-control" placeholder="Enter username" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Email Address</label>
-                            <input type="email" name="email" class="form-control" placeholder="student@univ.edu">
-                        </div>
-                    </div>
+                <!-- Two-column row 2 -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Phone Number</label>
+                    <input type="text" name="phone" class="form-control" placeholder="+91 9876543210">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Target Exam / Goal</label>
+                    <select name="target_exam" class="form-select">
+                        <option value="Placement Examination">Placement Examination</option>
+                        <option value="IT & Software Placement">IT & Software Placement</option>
+                        <option value="Core Engineering Aptitude">Core Engineering Aptitude</option>
+                        <option value="GATE & Higher Studies">GATE & Higher Studies</option>
+                    </select>
+                </div>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Phone Number</label>
-                            <input type="text" name="phone" class="form-control" placeholder="+91 9876543210">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Target Exam / Goal</label>
-                            <select name="target_exam" class="form-select">
-                                <option value="Placement Examination">Placement Examination</option>
-                                <option value="IT & Software Placement">IT & Software Placement</option>
-                                <option value="Core Engineering Aptitude">Core Engineering Aptitude</option>
-                                <option value="GATE & Higher Studies">GATE & Higher Studies</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="row mb-4">
-                        <div class="col-md-6 mb-3 mb-md-0">
-                            <label class="form-label fw-semibold">Password</label>
-                            <input type="password" name="password" class="form-control" placeholder="Create password" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">Confirm Password</label>
-                            <input type="password" name="confirm_password" class="form-control" placeholder="Confirm password" required>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-gradient-primary w-100 py-2 mb-3">
-                        <i class="bi bi-check-circle me-2"></i> Register Account
-                    </button>
-                </form>
-
-                <div class="text-center mt-3 pt-3 border-top border-slate-200">
-                    <p class="text-muted small mb-0">Already registered? <a href="{% url 'login' %}" class="text-primary text-decoration-none fw-bold">Sign in here</a></p>
+                <!-- Two-column row 3 -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="Create password" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Confirm Password</label>
+                    <input type="password" name="confirm_password" class="form-control" placeholder="Confirm password" required>
                 </div>
             </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-gradient-primary w-100 py-2 mb-3">
+                    <i class="bi bi-check-circle me-2"></i> Register Account
+                </button>
+            </div>
+        </form>
+
+        <div class="text-center mt-3 pt-3 border-top border-slate-200">
+            <p class="text-muted small mb-0">Already registered? <a href="{% url 'login' %}" class="text-primary text-decoration-none fw-bold">Sign in here</a></p>
         </div>
     </div>
 </div>
