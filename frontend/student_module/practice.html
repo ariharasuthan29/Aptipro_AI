@@ -3,22 +3,23 @@
 {% block title %}Daily Aptitude Practice - AptiPro AI{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom border-slate-200 gap-3">
+<div class="container-fluid px-4 py-3">
+    <!-- Compact Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 pb-2 border-bottom border-slate-200 gap-2">
         <div>
-            <h2 class="fw-bold mb-1"><i class="bi bi-journal-code text-primary me-2"></i> Daily Aptitude Practice</h2>
-            <p class="text-muted mb-0">Practice category-wise aptitude questions at your own pace with instant answer explanations.</p>
+            <h2 class="fw-bold mb-0" style="font-size: 1.6rem;"><i class="bi bi-journal-code text-primary me-2"></i> Daily Aptitude Practice</h2>
+            <p class="text-muted mb-0 small">Practice questions at your own pace with instant solution explanations.</p>
         </div>
-        <a href="{% url 'exam_start' %}" class="btn btn-gradient-primary rounded-pill px-4 fw-semibold">
-            <i class="bi bi-shield-lock me-1"></i> Switch to Proctored Exam
+        <a href="{% url 'exam_start' %}" class="btn btn-gradient-primary rounded-pill px-3 py-2 btn-sm fw-semibold">
+            <i class="bi bg-shield-lock me-1"></i> Switch to Proctored Exam
         </a>
     </div>
 
-    <!-- Category & Difficulty Filters (Fixed/Sticky at top of section) -->
-    <div class="glass-card p-3 mb-4 sticky-top bg-white border shadow-sm" style="top: 80px; z-index: 100;">
+    <!-- Compact & Sticky Filter Bar -->
+    <div class="glass-card p-2 mb-4 sticky-top bg-white border shadow-sm" style="top: 76px; z-index: 100;">
         <form method="GET" class="row g-2 align-items-center">
-            <div class="col-md-5 col-12">
-                <select name="category" class="form-select">
+            <div class="col-12 col-md-5">
+                <select name="category" class="form-select py-1 px-2" style="font-size: 0.95rem;">
                     <option value="">-- All Aptitude Categories --</option>
                     {% for cat in categories %}
                     <option value="{{ cat.id }}" {% if selected_category and selected_category.id == cat.id %}selected{% endif %}>
@@ -27,98 +28,89 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="col-md-4 col-12">
-                <select name="difficulty" class="form-select">
+            <div class="col-12 col-md-4">
+                <select name="difficulty" class="form-select py-1 px-2" style="font-size: 0.95rem;">
                     <option value="">-- All Difficulty Levels --</option>
                     <option value="EASY" {% if selected_difficulty == 'EASY' %}selected{% endif %}>Easy</option>
                     <option value="MEDIUM" {% if selected_difficulty == 'MEDIUM' %}selected{% endif %}>Medium</option>
                     <option value="HARD" {% if selected_difficulty == 'HARD' %}selected{% endif %}>Hard</option>
                 </select>
             </div>
-            <div class="col-md-3 col-12 d-flex gap-2">
-                <button type="submit" class="btn btn-primary w-100 fw-semibold"><i class="bi bi-funnel me-1"></i> Filter</button>
-                <a href="{% url 'practice' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-counterclockwise"></i></a>
+            <div class="col-12 col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary py-1 px-3 w-100 fw-semibold btn-sm"><i class="bi bi-funnel me-1"></i> Filter</button>
+                <a href="{% url 'practice' %}" class="btn btn-outline-secondary py-1 px-2 btn-sm"><i class="bi bi-arrow-counterclockwise"></i></a>
             </div>
         </form>
     </div>
 
-    <!-- Practice Questions Grid (Multi-column on large screens, single column on mobile) -->
-    <div class="row g-4">
+    <!-- Practice Questions list (Single Column, Full width, Auto Height) -->
+    <div class="d-flex flex-column gap-3">
         {% for q in questions %}
-        <div class="col-12 col-xl-6">
-            <div class="glass-card p-4 h-100 d-flex flex-column justify-content-between" id="practice-card-{{ q.id }}">
-                <div>
-                    <div class="d-flex justify-content-between align-items-start mb-3 gap-2">
-                        <div>
-                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-20 me-2">
-                                <i class="bi {{ q.category.icon }} me-1"></i> {{ q.category.name }}
-                            </span>
-                            <span class="badge {% if q.difficulty == 'EASY' %}badge-easy{% elif q.difficulty == 'MEDIUM' %}badge-medium{% else %}badge-hard{% endif %}">
-                                {{ q.get_difficulty_display }}
-                            </span>
-                        </div>
-                        <span class="text-muted small fw-semibold">Question #{{ forloop.counter }}</span>
-                    </div>
-
-                    <h4 class="fw-bold mb-3 text-dark">{{ q.question_text }}</h4>
-
-                    {% if q.code_snippet %}
-                    <pre class="bg-light p-3 rounded border border-slate-200 text-primary font-monospace small mb-3"><code>{{ q.code_snippet }}</code></pre>
-                    {% endif %}
-
-                    <!-- Options list (Large 18px text, stacks properly) -->
-                    <div class="row g-3 mb-3">
-                        <div class="col-12 col-md-6">
-                            <div class="option-card" onclick="selectPracticeOption({{ q.id }}, 'A')">
-                                <div class="option-letter" id="letter-{{ q.id }}-A">A</div>
-                                <div class="flex-grow-1 text-dark">{{ q.option_a }}</div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="option-card" onclick="selectPracticeOption({{ q.id }}, 'B')">
-                                <div class="option-letter" id="letter-{{ q.id }}-B">B</div>
-                                <div class="flex-grow-1 text-dark">{{ q.option_b }}</div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="option-card" onclick="selectPracticeOption({{ q.id }}, 'C')">
-                                <div class="option-letter" id="letter-{{ q.id }}-C">C</div>
-                                <div class="flex-grow-1 text-dark">{{ q.option_c }}</div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="option-card" onclick="selectPracticeOption({{ q.id }}, 'D')">
-                                <div class="option-letter" id="letter-{{ q.id }}-D">D</div>
-                                <div class="flex-grow-1 text-dark">{{ q.option_d }}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Toggle Answer Button -->
-                <div class="d-flex justify-content-between align-items-center pt-3 border-top border-slate-100 mt-3">
-                    <button class="btn btn-sm btn-outline-info rounded-pill px-3 fw-semibold" onclick="toggleExplanation({{ q.id }})">
-                        <i class="bi bi-lightbulb me-1"></i> Reveal Explanation
-                    </button>
-                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-30 d-none fs-6" id="correctBadge-{{ q.id }}">
-                        Correct Option: {{ q.correct_option }}
+        <div class="glass-card p-3 p-md-4 w-100" id="practice-card-{{ q.id }}">
+            
+            <!-- Metadata Header -->
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-20">
+                        <i class="bi {{ q.category.icon }} me-1"></i> {{ q.category.name }}
+                    </span>
+                    <span class="badge {% if q.difficulty == 'EASY' %}badge-easy{% elif q.difficulty == 'MEDIUM' %}badge-medium{% else %}badge-hard{% endif %}">
+                        {{ q.get_difficulty_display }}
                     </span>
                 </div>
+                <span class="text-muted small fw-semibold">Question #{{ forloop.counter }}</span>
+            </div>
 
-                <!-- Explanation Collapse -->
-                <div class="mt-3 p-3 rounded bg-light border border-info border-opacity-30 text-dark d-none" id="expBox-{{ q.id }}">
-                    <div class="fw-bold text-primary mb-1"><i class="bi bi-info-circle me-1"></i> Solution:</div>
-                    <p class="mb-0 text-secondary small">{{ q.explanation|default:"No detailed explanation provided for this question." }}</p>
+            <!-- Question Text (At the Top) -->
+            <div class="mb-3">
+                <h4 class="fw-bold text-dark mb-2" style="font-size: 1.25rem; line-height: 1.5;">{{ q.question_text }}</h4>
+                {% if q.code_snippet %}
+                <pre class="bg-light p-3 rounded border border-slate-200 text-primary font-monospace small mb-0"><code>{{ q.code_snippet }}</code></pre>
+                {% endif %}
+            </div>
+
+            <!-- Options Stacked (Directly Below Question) -->
+            <div class="d-flex flex-column gap-2 mb-3">
+                <div class="option-card" onclick="selectPracticeOption({{ q.id }}, 'A')">
+                    <div class="option-letter" id="letter-{{ q.id }}-A">A</div>
+                    <div class="text-dark">{{ q.option_a }}</div>
+                </div>
+                <div class="option-card" onclick="selectPracticeOption({{ q.id }}, 'B')">
+                    <div class="option-letter" id="letter-{{ q.id }}-B">B</div>
+                    <div class="text-dark">{{ q.option_b }}</div>
+                </div>
+                <div class="option-card" onclick="selectPracticeOption({{ q.id }}, 'C')">
+                    <div class="option-letter" id="letter-{{ q.id }}-C">C</div>
+                    <div class="text-dark">{{ q.option_c }}</div>
+                </div>
+                <div class="option-card" onclick="selectPracticeOption({{ q.id }}, 'D')">
+                    <div class="option-letter" id="letter-{{ q.id }}-D">D</div>
+                    <div class="text-dark">{{ q.option_d }}</div>
                 </div>
             </div>
+
+            <!-- Action Area (Directly Below Options) -->
+            <div class="d-flex justify-content-between align-items-center pt-2 border-top border-slate-100">
+                <button class="btn btn-sm btn-outline-info rounded-pill px-3 fw-semibold" onclick="toggleExplanation({{ q.id }})">
+                    <i class="bi bi-lightbulb me-1"></i> Reveal Explanation
+                </button>
+                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-30 d-none" id="correctBadge-{{ q.id }}" style="font-size: 0.95rem;">
+                    Correct Option: {{ q.correct_option }}
+                </span>
+            </div>
+
+            <!-- Explanation Collapse -->
+            <div class="mt-3 p-3 rounded bg-light border border-info border-opacity-30 text-dark d-none" id="expBox-{{ q.id }}">
+                <div class="fw-bold text-primary mb-1"><i class="bi bi-info-circle me-1"></i> Solution Explanation:</div>
+                <p class="mb-0 text-secondary small">{{ q.explanation|default:"Detailed solution for this problem." }}</p>
+            </div>
+            
         </div>
         {% empty %}
-        <div class="col-12">
-            <div class="glass-card p-5 text-center">
-                <i class="bi bi-search fs-1 text-secondary d-block mb-3"></i>
-                <h4>No Questions Found</h4>
-                <p class="text-muted">Try selecting a different category or difficulty level.</p>
-            </div>
+        <div class="glass-card p-5 text-center w-100">
+            <i class="bi bi-search fs-1 text-secondary d-block mb-3"></i>
+            <h4>No Questions Found</h4>
+            <p class="text-muted">Try selecting a different category or difficulty level.</p>
         </div>
         {% endfor %}
     </div>
