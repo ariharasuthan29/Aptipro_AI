@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard - AptiPro AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header Greeting -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom border-slate-200 gap-3">
+        <div>
+            <h2 class="fw-bold mb-1">Hello, <span class="brand-gradient">{{ user.username }}</span>! 👋</h2>
+            <p class="text-muted mb-0">Track your daily performance, practice aptitude drills, and prepare for placement exams.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'practice' %}" class="btn btn-outline-primary rounded-pill px-3 fw-semibold">
+                <i class="bi bi-journal-code me-1"></i> Daily Practice
+            </a>
+            <a href="{% url 'exam_start' %}" class="btn btn-gradient-primary rounded-pill px-4 fw-semibold">
+                <i class="bi bi-play-circle-fill me-1"></i> Take Placement Exam
+            </a>
+        </div>
+    </div>
+
+    <!-- Overview Stat Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="glass-card p-3 p-md-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold">Tests Attempted</span>
+                    <div class="p-2 rounded-circle bg-primary bg-opacity-10">
+                        <i class="bi bi-journal-check text-primary fs-5"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold mb-0">{{ total_tests }}</h3>
+                <small class="text-muted">Proctored & Practice</small>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="glass-card p-3 p-md-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold">Average Score</span>
+                    <div class="p-2 rounded-circle bg-info bg-opacity-10">
+                        <i class="bi bi-graph-up-arrow text-info fs-5"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold mb-0 text-info">{{ avg_score }}%</h3>
+                <small class="text-muted">Overall accuracy</small>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="glass-card p-3 p-md-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold">Highest Score</span>
+                    <div class="p-2 rounded-circle bg-success bg-opacity-10">
+                        <i class="bi bi-trophy-fill text-success fs-5"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold mb-0 text-success">{{ highest_score }}%</h3>
+                <small class="text-muted">Personal record</small>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="glass-card p-3 p-md-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold">Daily Streak</span>
+                    <div class="p-2 rounded-circle bg-warning bg-opacity-10">
+                        <i class="bi bi-fire text-warning fs-5"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold mb-0 text-warning">{{ profile.daily_streak }} Days</h3>
+                <small class="text-muted">Consecutive logins</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4 mb-4">
+        <!-- Performance Trend Line Chart -->
+        <div class="col-lg-7">
+            <div class="glass-card p-4 h-100">
+                <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-activity text-primary"></i> Exam Score Trend
+                </h5>
+                <div style="position: relative; height: 260px;">
+                    <canvas id="scoreTrendChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Accuracy Breakdown -->
+        <div class="col-lg-5">
+            <div class="glass-card p-4 h-100">
+                <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-pie-chart-fill text-indigo"></i> Category Accuracy
+                </h5>
+                <div class="d-flex flex-column gap-3 overflow-auto" style="max-height: 260px;">
+                    {% for cat in cat_performance %}
+                    <div>
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span class="fw-semibold text-dark"><i class="bi {{ cat.icon }} me-1"></i> {{ cat.name }}</span>
+                            <span class="text-muted">{{ cat.correct }}/{{ cat.total }} ({{ cat.accuracy }}%)</span>
+                        </div>
+                        <div class="progress bg-slate-200" style="height: 8px;">
+                            <div class="progress-bar bg-gradient" style="width: {{ cat.accuracy }}%; background: linear-gradient(90deg, #2563eb, #4f46e5);" role="progressbar"></div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted small text-center my-auto">No category data available yet. Start practicing!</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Exam Sessions -->
+    <div class="glass-card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold mb-0"><i class="bi bi-clock-history text-info me-2"></i> Recent Examination History</h5>
+            <a href="{% url 'exam_start' %}" class="btn btn-sm btn-outline-primary rounded-pill fw-semibold">Take New Exam</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-clean align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Exam Mode</th>
+                        <th>Score (MCQs)</th>
+                        <th>Percentage</th>
+                        <th>Violations</th>
+                        <th>Status</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for session in recent_exams %}
+                    <tr>
+                        <td>{{ session.start_time|date:"M d, Y H:i" }}</td>
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                {{ session.get_mode_display }}
+                            </span>
+                        </td>
+                        <td><span class="fw-bold text-dark">{{ session.score|floatformat:0 }}</span> / {{ session.total_questions }}</td>
+                        <td>
+                            <span class="fw-bold {% if session.percentage >= 60 %}text-success{% else %}text-danger{% endif %}">
+                                {{ session.percentage }}%
+                            </span>
+                        </td>
+                        <td>
+                            {% if session.violation_count == 0 %}
+                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-20"><i class="bi bi-shield-check"></i> Clean</span>
+                            {% else %}
+                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-20"><i class="bi bi-exclamation-triangle"></i> {{ session.violation_count }} Strikes</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if session.status == 'COMPLETED' %}
+                            <span class="badge bg-success bg-opacity-20 text-success">Submitted</span>
+                            {% else %}
+                            <span class="badge bg-warning bg-opacity-20 text-warning">Auto Submitted</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <a href="{% url 'exam_result' session.session_key %}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                <i class="bi bi-bar-chart me-1"></i> Result
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">
+                            <i class="bi bi-inbox fs-3 d-block mb-2 text-secondary"></i>
+                            No exam sessions completed yet. Click "Take Placement Exam" to begin your first test!
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const labels = {{ chart_labels|safe }};
+    const scores = {{ chart_scores|safe }};
+
+    const ctx = document.getElementById('scoreTrendChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Percentage Score (%)',
+                data: scores,
+                borderColor: '#2563eb',
+                backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.35,
+                pointBackgroundColor: '#4f46e5',
+                pointRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    grid: { color: '#e2e8f0' },
+                    ticks: { color: '#64748b' }
+                },
+                y: {
+                    min: 0,
+                    max: 100,
+                    grid: { color: '#e2e8f0' },
+                    ticks: { color: '#64748b' }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

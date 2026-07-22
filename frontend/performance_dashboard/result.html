@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+{% block title %}Exam Score & Analytics Result - AptiPro AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Result Banner Header -->
+    <div class="glass-card p-4 p-md-5 mb-4 text-center">
+        <div class="d-inline-flex p-3 rounded-circle {% if session.percentage >= 60 %}bg-success bg-opacity-10 text-success{% else %}bg-danger bg-opacity-10 text-danger{% endif %} mb-3">
+            <i class="bi {% if session.percentage >= 60 %}bi-check-circle-fill{% else %}bi-x-circle-fill{% endif %} fs-1"></i>
+        </div>
+        
+        <h2 class="fw-bold mb-1">
+            {% if session.percentage >= 60 %}
+            <span class="text-success">Passed Examination! 🎉</span>
+            {% else %}
+            <span class="text-danger">Needs Improvement</span>
+            {% endif %}
+        </h2>
+        <p class="text-muted mb-4">Exam Mode: {{ session.get_mode_display }} | Date: {{ session.start_time|date:"F d, Y H:i" }}</p>
+
+        <!-- Big Metric Cards Row -->
+        <div class="row g-3 justify-content-center">
+            <div class="col-6 col-md-3">
+                <div class="bg-light p-3 rounded-4 border border-slate-200">
+                    <span class="text-muted small d-block mb-1 fw-semibold">Percentage Score</span>
+                    <h2 class="fw-bold mb-0 {% if session.percentage >= 60 %}text-success{% else %}text-danger{% endif %}">
+                        {{ session.percentage }}%
+                    </h2>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="bg-light p-3 rounded-4 border border-slate-200">
+                    <span class="text-muted small d-block mb-1 fw-semibold">Correct Answers</span>
+                    <h2 class="fw-bold mb-0 text-dark">{{ session.correct_answers_count }} / {{ session.total_questions }}</h2>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="bg-light p-3 rounded-4 border border-slate-200">
+                    <span class="text-muted small d-block mb-1 fw-semibold">Time Taken</span>
+                    <h2 class="fw-bold mb-0 text-primary">{{ time_taken_min }}m {{ time_taken_sec }}s</h2>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="bg-light p-3 rounded-4 border border-slate-200">
+                    <span class="text-muted small d-block mb-1 fw-semibold">Proctoring Status</span>
+                    <h2 class="fw-bold mb-0 {% if session.violation_count == 0 %}text-success{% else %}text-warning{% endif %} fs-4">
+                        {% if session.violation_count == 0 %}
+                        <i class="bi bi-shield-check me-1"></i> Clean
+                        {% else %}
+                        <i class="bi bi-exclamation-triangle me-1"></i> {{ session.violation_count }} Strikes
+                        {% endif %}
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category & Difficulty Breakdown -->
+    <div class="row g-4 mb-4">
+        <!-- Difficulty Accuracy Breakdown -->
+        <div class="col-md-6">
+            <div class="glass-card p-4 h-100">
+                <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-bar-chart-steps text-primary"></i> Difficulty Analysis
+                </h5>
+                <div class="table-responsive">
+                    <table class="table table-hover table-clean align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Difficulty</th>
+                                <th>Correct / Total</th>
+                                <th>Accuracy</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for level, stats in diff_stats.items %}
+                            <tr>
+                                <td>
+                                    <span class="badge {% if level == 'EASY' %}badge-easy{% elif level == 'MEDIUM' %}badge-medium{% else %}badge-hard{% endif %}">
+                                        {{ level }}
+                                    </span>
+                                </td>
+                                <td>{{ stats.correct }} / {{ stats.total }}</td>
+                                <td class="fw-bold text-primary">{{ stats.acc }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Accuracy Breakdown -->
+        <div class="col-md-6">
+            <div class="glass-card p-4 h-100">
+                <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-diagram-3-fill text-indigo"></i> Category Analysis
+                </h5>
+                <div class="table-responsive">
+                    <table class="table table-hover table-clean align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Correct / Total</th>
+                                <th>Accuracy</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for c_name, stats in cat_stats.items %}
+                            <tr>
+                                <td>{{ c_name }}</td>
+                                <td>{{ stats.correct }} / {{ stats.total }}</td>
+                                <td class="fw-bold text-success">{{ stats.acc }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Violations Log Table (If any) -->
+    {% if violations %}
+    <div class="glass-card p-4 mb-4 border-danger border-opacity-40">
+        <h5 class="fw-bold text-danger mb-3 d-flex align-items-center gap-2">
+            <i class="bi bi-shield-slash-fill"></i> Security & Proctoring Violation Logs
+        </h5>
+        <div class="table-responsive">
+            <table class="table table-hover table-clean align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Violation Event</th>
+                        <th>Warning Level</th>
+                        <th>Details</th>
+                        <th>Webcam Snapshot</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for v in violations %}
+                    <tr>
+                        <td>{{ v.timestamp|date:"H:i:s" }}</td>
+                        <td><span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-30">{{ v.get_violation_type_display }}</span></td>
+                        <td>Strike {{ v.warning_level }} of 3</td>
+                        <td class="small text-muted">{{ v.details }}</td>
+                        <td>
+                            {% if v.snapshot %}
+                            <a href="{{ v.snapshot.url }}" target="_blank" class="btn btn-sm btn-outline-danger rounded-pill fw-semibold">
+                                <i class="bi bi-image me-1"></i> View Frame
+                            </a>
+                            {% else %}
+                            <span class="text-muted small">No Image</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Question Review Section -->
+    <div class="glass-card p-4">
+        <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+            <i class="bi bi-check2-square text-success"></i> Question-by-Question Review
+        </h5>
+
+        {% for r in responses %}
+        <div class="p-3 mb-3 rounded-4 bg-light border {% if r.is_correct %}border-success border-opacity-50{% elif r.selected_option %}border-danger border-opacity-50{% else %}border-slate-200{% endif %}">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                    <span class="badge bg-primary bg-opacity-10 text-primary me-2">Q{{ forloop.counter }}</span>
+                    <span class="badge bg-secondary bg-opacity-10 text-dark me-2">{{ r.question.category.name }}</span>
+                    <span class="badge {% if r.question.difficulty == 'EASY' %}badge-easy{% elif r.question.difficulty == 'MEDIUM' %}badge-medium{% else %}badge-hard{% endif %}">
+                        {{ r.question.get_difficulty_display }}
+                    </span>
+                </div>
+                <div>
+                    {% if r.is_correct %}
+                    <span class="badge bg-success fw-semibold"><i class="bi bi-check-lg"></i> Correct (+1)</span>
+                    {% elif r.selected_option %}
+                    <span class="badge bg-danger fw-semibold"><i class="bi bi-x-lg"></i> Incorrect</span>
+                    {% else %}
+                    <span class="badge bg-secondary fw-semibold">Unanswered</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <h5 class="fw-bold text-dark mb-3">{{ r.question.question_text }}</h5>
+
+            <div class="row g-2 mb-3">
+                {% for key, opt in r.shuffled_options.items %}
+                <div class="col-md-6">
+                    <div class="p-2 rounded small d-flex align-items-center gap-2 
+                        {% if opt.orig_key == r.question.correct_option %}bg-success bg-opacity-10 border border-success text-success fw-bold{% elif key == r.selected_option %}bg-danger bg-opacity-10 border border-danger text-danger fw-bold{% else %}bg-white border text-secondary{% endif %}">
+                        <span class="fw-bold">{{ key }}.</span>
+                        <span>{{ opt.text }}</span>
+                        {% if opt.orig_key == r.question.correct_option %}
+                        <i class="bi bi-check-circle-fill ms-auto"></i>
+                        {% elif key == r.selected_option %}
+                        <i class="bi bi-x-circle-fill ms-auto"></i>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="p-3 rounded bg-white border text-secondary small">
+                <strong class="text-primary me-1"><i class="bi bi-info-circle"></i> Explanation:</strong> {{ r.question.explanation|default:"No explanation available." }}
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="text-center mt-4">
+            <a href="{% url 'dashboard' %}" class="btn btn-gradient-primary px-4 rounded-pill me-2 fw-semibold">Back to Dashboard</a>
+            <a href="{% url 'exam_start' %}" class="btn btn-outline-primary px-4 rounded-pill fw-semibold">Take Another Exam</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Leaderboard & Rankings - AptiPro AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom border-slate-200 gap-3">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-trophy text-warning me-2"></i> Placement Preparation Leaderboard</h2>
+            <p class="text-muted mb-0">Compete with fellow students and boost your placement examination readiness rank.</p>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="btn-group bg-light p-1 rounded-pill border border-slate-200">
+            <a href="?timeframe=overall" class="btn btn-sm {% if timeframe == 'overall' %}btn-primary{% else %}btn-light text-secondary{% endif %} rounded-pill px-3 fw-semibold">Overall</a>
+            <a href="?timeframe=monthly" class="btn btn-sm {% if timeframe == 'monthly' %}btn-primary{% else %}btn-light text-secondary{% endif %} rounded-pill px-3 fw-semibold">Monthly</a>
+            <a href="?timeframe=weekly" class="btn btn-sm {% if timeframe == 'weekly' %}btn-primary{% else %}btn-light text-secondary{% endif %} rounded-pill px-3 fw-semibold">Weekly</a>
+        </div>
+    </div>
+
+    <!-- Top 3 Podium (If available) -->
+    {% if leaderboard|length >= 3 %}
+    <div class="row g-3 justify-content-center mb-5 align-items-end">
+        <!-- 2nd Place -->
+        <div class="col-md-4 col-lg-3 order-2 order-md-1">
+            <div class="glass-card p-4 text-center border-slate-300">
+                <div class="display-6 text-secondary mb-2"><i class="bi bi-award-fill"></i></div>
+                <span class="badge bg-secondary mb-2 px-3 py-1 fw-semibold">2nd Rank</span>
+                <h5 class="fw-bold text-dark mb-1">{{ leaderboard.1.username }}</h5>
+                <p class="text-primary fw-semibold mb-1">{{ leaderboard.1.points }} Points</p>
+                <small class="text-muted">Avg: {{ leaderboard.1.avg_pct }}%</small>
+            </div>
+        </div>
+
+        <!-- 1st Place (Gold) -->
+        <div class="col-md-4 col-lg-3 order-1 order-md-2">
+            <div class="glass-card p-4 text-center border-warning shadow-lg" style="transform: scale(1.05);">
+                <div class="display-5 text-warning mb-2"><i class="bi bi-trophy-fill"></i></div>
+                <span class="badge bg-warning text-dark fw-bold mb-2 px-3 py-1">🥇 1st Rank Champion</span>
+                <h4 class="fw-bold text-dark mb-1">{{ leaderboard.0.username }}</h4>
+                <p class="text-warning fw-bold fs-5 mb-1">{{ leaderboard.0.points }} Points</p>
+                <small class="text-muted">Avg: {{ leaderboard.0.avg_pct }}% | Streak: {{ leaderboard.0.streak }}d</small>
+            </div>
+        </div>
+
+        <!-- 3rd Place -->
+        <div class="col-md-4 col-lg-3 order-3">
+            <div class="glass-card p-4 text-center border-danger border-opacity-30">
+                <div class="display-6 text-danger mb-2"><i class="bi bi-award-fill"></i></div>
+                <span class="badge bg-danger bg-opacity-10 text-danger mb-2 px-3 py-1 fw-semibold">3rd Rank</span>
+                <h5 class="fw-bold text-dark mb-1">{{ leaderboard.2.username }}</h5>
+                <p class="text-primary fw-semibold mb-1">{{ leaderboard.2.points }} Points</p>
+                <small class="text-muted">Avg: {{ leaderboard.2.avg_pct }}%</small>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Full Rankings Table -->
+    <div class="glass-card p-4">
+        <h5 class="fw-bold mb-3"><i class="bi bi-list-ol text-primary me-2"></i> Rank Listings</h5>
+        <div class="table-responsive">
+            <table class="table table-hover table-clean align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Student Name</th>
+                        <th>Daily Streak</th>
+                        <th>Tests Taken</th>
+                        <th>Avg Score</th>
+                        <th>Highest Score</th>
+                        <th class="text-end">Total Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in leaderboard %}
+                    <tr class="{% if item.username == user.username %}table-primary bg-primary bg-opacity-10{% endif %}">
+                        <td class="fw-bold fs-5">
+                            {% if item.rank == 1 %}
+                            <span class="text-warning"><i class="bi bi-trophy-fill me-1"></i> #1</span>
+                            {% elif item.rank == 2 %}
+                            <span class="text-secondary"><i class="bi bi-award-fill me-1"></i> #2</span>
+                            {% elif item.rank == 3 %}
+                            <span class="text-danger"><i class="bi bi-award-fill me-1"></i> #3</span>
+                            {% else %}
+                            #{{ item.rank }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="fw-bold text-dark">{{ item.username }}</span>
+                            {% if item.username == user.username %}
+                            <span class="badge bg-primary ms-1">You</span>
+                            {% endif %}
+                        </td>
+                        <td><i class="bi bi-fire text-warning me-1"></i> {{ item.streak }} Days</td>
+                        <td>{{ item.tests_count }}</td>
+                        <td class="fw-bold text-primary">{{ item.avg_pct }}%</td>
+                        <td class="fw-bold text-success">{{ item.max_pct }}%</td>
+                        <td class="text-end fw-bold fs-5 text-warning">{{ item.points }} pts</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">No student rankings calculated for this timeframe yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

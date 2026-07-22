@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Pre-Exam Instructions & Camera Verification - AptiPro AI{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="glass-card p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-30 px-3 py-2 rounded-pill mb-2 fw-semibold">
+                        <i class="bi bi-shield-lock-fill me-1"></i> AI Proctored Environment
+                    </span>
+                    <h2 class="fw-bold mb-2">Placement Examination Simulation</h2>
+                    <p class="text-muted">Total Duration: <strong class="text-dark">1 Hour (60 Minutes)</strong> | Total Questions: <strong class="text-dark">40 MCQs</strong></p>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <!-- Security Guidelines -->
+                    <div class="col-md-7">
+                        <div class="bg-light p-4 rounded-4 border border-slate-200 h-100">
+                            <h5 class="fw-bold text-dark mb-3"><i class="bi bi-exclamation-octagon text-warning me-2"></i> Mandatory Exam Rules</h5>
+                            
+                            <ul class="list-unstyled text-secondary small d-flex flex-column gap-3 mb-0">
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-fullscreen text-primary fs-5 mt-n1"></i>
+                                    <div>
+                                        <strong class="text-dark">Full Screen Mode Mandatory</strong><br>
+                                        The examination will launch in full screen. Exiting full screen mode triggers security warnings.
+                                    </div>
+                                </li>
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-camera-video text-info fs-5 mt-n1"></i>
+                                    <div>
+                                        <strong class="text-dark">Continuous AI Webcam Monitoring</strong><br>
+                                        Your webcam must remain enabled. OpenCV AI models will verify single candidate face presence continuously.
+                                    </div>
+                                </li>
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-window-x text-danger fs-5 mt-n1"></i>
+                                    <div>
+                                        <strong class="text-dark">Tab Switching & Application Lock</strong><br>
+                                        Switching tabs, minimizing the browser, or attempting copy/paste key combinations is strictly forbidden.
+                                    </div>
+                                </li>
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-slash-circle text-warning fs-5 mt-n1"></i>
+                                    <div>
+                                        <strong class="text-dark">3-Strike Automatic Termination Policy</strong><br>
+                                        Strike 1: Warning Modal | Strike 2: Security Banner | Strike 3: Immediate Auto-Submission & Termination.
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Webcam Test Box -->
+                    <div class="col-md-5">
+                        <div class="bg-light p-4 rounded-4 border border-slate-200 h-100 text-center d-flex flex-column justify-content-center align-items-center">
+                            <h6 class="fw-bold text-dark mb-3"><i class="bi bi-webcam text-success me-1"></i> Camera System Test</h6>
+                            
+                            <div class="proctor-camera-container mb-3" style="width: 100%; height: 180px;">
+                                <video id="previewVideo" autoplay playsinline muted></video>
+                                <span class="proctor-live-badge"><i class="bi bi-record-fill"></i> Live Preview</span>
+                            </div>
+
+                            <div id="cameraStatusText" class="small text-warning">
+                                <i class="bi bi-arrow-repeat spin me-1"></i> Requesting camera permission...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Launch Form -->
+                <form method="POST" action="{% url 'start_exam_session' %}" id="examStartForm">
+                    {% csrf_token %}
+                    
+                    <div class="form-check mb-4 bg-light p-3 rounded border border-slate-200 ps-5">
+                        <input class="form-check-input" type="checkbox" id="agreeRules" required>
+                        <label class="form-check-label text-dark small fw-semibold" for="agreeRules">
+                            I understand and agree to adhere to all AI proctoring rules, fullscreen requirements, and browser security terms.
+                        </label>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" id="startExamBtn" class="btn btn-gradient-primary btn-lg px-5 py-3 rounded-pill fw-bold shadow-lg" disabled>
+                            <i class="bi bi-shield-check me-2"></i> Start 1-Hour Proctored Examination
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const video = document.getElementById('previewVideo');
+    const statusText = document.getElementById('cameraStatusText');
+    const startBtn = document.getElementById('startExamBtn');
+    const agreeCheck = document.getElementById('agreeRules');
+
+    let cameraReady = false;
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            video.srcObject = stream;
+            video.play();
+            cameraReady = true;
+            statusText.className = "small text-success fw-semibold";
+            statusText.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Camera Connected & Verified!';
+            updateButtonState();
+        })
+        .catch(err => {
+            statusText.className = "small text-danger fw-semibold";
+            statusText.innerHTML = '<i class="bi bi-x-circle-fill me-1"></i> Camera Access Denied or Missing!';
+        });
+
+    agreeCheck.addEventListener('change', updateButtonState);
+
+    function updateButtonState() {
+        startBtn.disabled = !(cameraReady && agreeCheck.checked);
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Control Dashboard - AptiPro AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom border-slate-200 gap-3">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-shield-lock-fill text-warning me-2"></i> Administrator Control Center</h2>
+            <p class="text-muted mb-0">Manage question bank, import Excel question sets, inspect security violations, and monitor students.</p>
+        </div>
+
+        <div class="d-flex gap-2">
+            <!-- Download Sample Excel Template -->
+            <a href="{% url 'export_sample_excel_template' %}" class="btn btn-outline-success rounded-pill px-3 fw-semibold">
+                <i class="bi bi-file-earmark-excel me-1"></i> Download Excel Template
+            </a>
+
+            <!-- Bulk Import Modal Trigger -->
+            <button type="button" class="btn btn-gradient-primary rounded-pill px-4 fw-semibold" data-bs-toggle="modal" data-bs-target="#excelImportModal">
+                <i class="bi bi-file-earmark-arrow-up-fill me-1"></i> Bulk Import Questions (Excel)
+            </button>
+        </div>
+    </div>
+
+    <!-- Admin Metric Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="glass-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold">Registered Students</span>
+                    <i class="bi bi-people-fill text-primary fs-4"></i>
+                </div>
+                <h3 class="fw-bold mb-0 text-dark">{{ total_students }}</h3>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="glass-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold">Question Bank Pool</span>
+                    <i class="bi bi-journal-check text-info fs-4"></i>
+                </div>
+                <h3 class="fw-bold mb-0 text-info">{{ total_questions }}</h3>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="glass-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold">Exam Sessions</span>
+                    <i class="bi bi-laptop-fill text-success fs-4"></i>
+                </div>
+                <h3 class="fw-bold mb-0 text-success">{{ total_exams }}</h3>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="glass-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold">Proctoring Violations</span>
+                    <i class="bi bi-exclamation-octagon-fill text-danger fs-4"></i>
+                </div>
+                <h3 class="fw-bold mb-0 text-danger">{{ total_violations }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Quick Nav Buttons -->
+    <div class="d-flex gap-3 mb-4">
+        <a href="{% url 'admin_questions' %}" class="btn btn-outline-primary px-4 py-2 rounded-pill fw-semibold">
+            <i class="bi bi-card-checklist me-2"></i> Manage Question Bank & Add Questions
+        </a>
+        <a href="{% url 'admin_violations' %}" class="btn btn-outline-danger px-4 py-2 rounded-pill fw-semibold">
+            <i class="bi bi-camera-video me-2"></i> View Camera & Security Violation Logs
+        </a>
+    </div>
+
+    <!-- Recent Violation Logs Table -->
+    <div class="glass-card p-4">
+        <h5 class="fw-bold text-danger mb-3 d-flex align-items-center gap-2">
+            <i class="bi bi-shield-alert"></i> Live Security & AI Violation Feed
+        </h5>
+        <div class="table-responsive">
+            <table class="table table-hover table-clean align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Student</th>
+                        <th>Violation Type</th>
+                        <th>Warning Level</th>
+                        <th>Details</th>
+                        <th>Camera Frame Snapshot</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for v in recent_violations %}
+                    <tr>
+                        <td>{{ v.timestamp|date:"M d, H:i:s" }}</td>
+                        <td class="fw-bold text-dark">{{ v.user.username }}</td>
+                        <td><span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-30">{{ v.get_violation_type_display }}</span></td>
+                        <td>Strike {{ v.warning_level }} of 3</td>
+                        <td class="small text-muted">{{ v.details }}</td>
+                        <td>
+                            {% if v.snapshot %}
+                            <a href="{{ v.snapshot.url }}" target="_blank" class="btn btn-sm btn-outline-danger rounded-pill fw-semibold">
+                                <i class="bi bi-eye-fill me-1"></i> View Frame
+                            </a>
+                            {% else %}
+                            <span class="text-muted small">N/A</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">No security violations recorded yet. All exam sessions clean!</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Bulk Excel Question Import Modal -->
+<div class="modal fade" id="excelImportModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card text-dark">
+            <div class="modal-header border-slate-200">
+                <h5 class="modal-title fw-bold"><i class="bi bi-file-earmark-excel text-success me-2"></i> Bulk Import Questions from Excel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{% url 'import_excel_questions' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p class="text-muted small mb-3">Upload your question set in <code>.xlsx</code> or <code>.csv</code> format. Download the standard sample template below if needed.</p>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Select Excel / CSV File</label>
+                        <input type="file" name="excel_file" class="form-control" accept=".xlsx, .csv" required>
+                    </div>
+
+                    <div class="p-3 bg-light rounded border border-slate-200 small text-muted">
+                        <strong class="text-dark">Template Header Columns Required:</strong><br>
+                        <code>Category | Difficulty | Question Text | Option A | Option B | Option C | Option D | Correct Option | Explanation</code>
+                    </div>
+                </div>
+                <div class="modal-footer border-slate-200">
+                    <a href="{% url 'export_sample_excel_template' %}" class="btn btn-outline-success me-auto rounded-pill btn-sm fw-semibold">
+                        <i class="bi bi-download me-1"></i> Get Sample .xlsx
+                    </a>
+                    <button type="button" class="btn btn-outline-secondary rounded-pill fw-semibold" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-gradient-primary rounded-pill px-4 fw-semibold">
+                        <i class="bi bi-cloud-upload me-1"></i> Import Now
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

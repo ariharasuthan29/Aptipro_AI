@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Django
+db.sqlite3
+media/
+db.sqlite3-journal
+
+# Excel files
+*.xlsx
+*.csv
+
+# OS
+.DS_Store
+Thumbs.db

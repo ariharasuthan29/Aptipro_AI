@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - AptiPro AI{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center align-items-center min-vh-75">
+        <div class="col-md-5 col-lg-4">
+            <div class="glass-card p-4 p-md-5 shadow">
+                <div class="text-center mb-4">
+                    <div class="d-inline-flex p-3 rounded-circle bg-primary bg-opacity-10 mb-3">
+                        <i class="bi bi-shield-lock-fill text-primary fs-2"></i>
+                    </div>
+                    <h3 class="fw-bold mb-1">Welcome Back</h3>
+                    <p class="text-muted small">Sign in to continue your placement preparation</p>
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-slate-300 text-muted"><i class="bi bi-person"></i></span>
+                            <input type="text" name="username" class="form-control" placeholder="Enter username" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-slate-300 text-muted"><i class="bi bi-key"></i></span>
+                            <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-gradient-primary w-100 py-2 mb-3">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Sign In
+                    </button>
+                </form>
+
+                <div class="text-center mt-3 pt-3 border-top border-slate-200">
+                    <p class="text-muted small mb-0">Don't have an account? <a href="{% url 'register' %}" class="text-primary text-decoration-none fw-bold">Register here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,304 @@
+/* Ultra Clean Light Theme - High Contrast Professional Placement Portal */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+
+:root {
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-card-border: #e2e8f0;
+    --accent-primary: #2563eb;
+    --accent-primary-hover: #1d4ed8;
+    --accent-secondary: #4f46e5;
+    --accent-teal: #0d9488;
+    --accent-warning: #d97706;
+    --accent-danger: #dc2626;
+    --accent-success: #059669;
+    --text-primary: #0f172a;
+    --text-body: #334155;
+    --text-muted: #64748b;
+    --font-family-base: 'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+    background-color: var(--bg-main);
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.04) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(79, 70, 229, 0.04) 0px, transparent 50%);
+    background-attachment: fixed;
+    color: var(--text-body);
+    font-family: var(--font-family-base);
+    font-size: 1.05rem; /* 17px base font size for ultra readability */
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Headings Typography */
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    color: var(--text-primary) !important;
+    font-family: 'Plus Jakarta Sans', var(--font-family-base);
+    font-weight: 700;
+    letter-spacing: -0.3px;
+}
+
+h1, .h1 { font-size: 2.25rem; }
+h2, .h2 { font-size: 1.85rem; }
+h3, .h3 { font-size: 1.55rem; }
+h4, .h4 { font-size: 1.35rem; }
+h5, .h5 { font-size: 1.18rem; }
+
+/* Navbar Clean Light Styling */
+.navbar-clean {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--bg-card-border);
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+}
+
+.brand-gradient {
+    background: linear-gradient(135deg, #1e40af 0%, #4f46e5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    font-size: 1.4rem;
+    letter-spacing: -0.5px;
+}
+
+.nav-link {
+    color: #475569 !important;
+    font-weight: 600;
+    font-size: 1.0rem;
+    transition: color 0.2s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--accent-primary) !important;
+}
+
+/* Clean White Cards with Soft Shadow */
+.glass-card {
+    background: var(--bg-card);
+    border: 1px solid var(--bg-card-border);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.glass-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
+}
+
+/* HIGH CONTRAST FORM CONTROLS (16px-18px Fonts) */
+.form-label {
+    color: var(--text-primary) !important;
+    font-size: 1.0rem !important; /* 16px */
+    font-weight: 600 !important;
+    margin-bottom: 6px;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.form-control, .form-select {
+    background-color: #ffffff !important;
+    color: var(--text-primary) !important;
+    border: 1.5px solid #cbd5e1 !important;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 1.05rem !important; /* 17px */
+    font-weight: 500;
+    box-shadow: none !important;
+}
+
+.form-control::placeholder {
+    color: #94a3b8 !important;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: #ffffff !important;
+    color: var(--text-primary) !important;
+    border-color: var(--accent-primary) !important;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15) !important;
+}
+
+/* Buttons */
+.btn-gradient-primary {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white !important;
+    border: none;
+    font-weight: 600;
+    font-size: 1.05rem;
+    border-radius: 10px;
+    padding: 10px 24px;
+    transition: all 0.2s ease;
+}
+
+.btn-gradient-primary:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+}
+
+.btn-gradient-success {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    color: white !important;
+    border: none;
+    font-weight: 600;
+    border-radius: 10px;
+}
+
+.btn-gradient-danger {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    color: white !important;
+    border: none;
+    font-weight: 600;
+    border-radius: 10px;
+}
+
+/* Exam Room & MCQ Option Cards (Large 18px Text) */
+.option-card {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 1.1rem; /* 18px Option text size */
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.option-card:hover {
+    background: #eff6ff;
+    border-color: #93c5fd;
+}
+
+.option-card.selected {
+    background: #eff6ff;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 16px rgba(37, 99, 235, 0.2);
+}
+
+.option-letter {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--text-primary);
+}
+
+.option-card.selected .option-letter {
+    background: var(--accent-primary);
+    color: white;
+}
+
+/* Exam Timer Box */
+.timer-box {
+    background: #fef2f2;
+    border: 1.5px solid #fca5a5;
+    padding: 8px 18px;
+    border-radius: 12px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #dc2626;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Webcam Frame Box */
+.proctor-camera-container {
+    position: relative;
+    width: 220px;
+    height: 165px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2.5px solid var(--accent-primary);
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+    background: #000;
+}
+
+.proctor-camera-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.proctor-live-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: #dc2626;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Question Palette Grid Buttons */
+.q-grid-btn {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.0rem;
+    border-radius: 10px;
+    border: 1.5px solid #cbd5e1;
+    background: #ffffff;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+}
+
+.q-grid-btn.answered {
+    background: var(--accent-primary);
+    color: white;
+    border-color: var(--accent-primary);
+}
+
+.q-grid-btn.active {
+    border-color: #4f46e5;
+    box-shadow: 0 0 10px rgba(79, 70, 229, 0.4);
+    transform: scale(1.05);
+}
+
+/* Badges */
+.badge-easy { background: #d1fae5; color: #047857; border: 1px solid #a7f3d0; font-weight: 600; }
+.badge-medium { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; font-weight: 600; }
+.badge-hard { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; font-weight: 600; }
+
+/* Table Styling for Clean Light Theme */
+.table-clean {
+    color: var(--text-body);
+}
+
+.table-clean th {
+    background: #f1f5f9;
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.table-clean td {
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+    font-size: 1.0rem;
+}

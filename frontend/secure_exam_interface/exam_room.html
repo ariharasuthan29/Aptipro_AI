@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proctored Examination Room - AptiPro AI</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        body {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="min-vh-100 d-flex flex-direction-column">
+
+    <!-- Exam Header Bar -->
+    <header class="navbar-clean py-2 px-3 border-bottom sticky-top bg-white">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+                <span class="brand-gradient fs-4 fw-bold"><i class="bi bi-shield-lock-fill text-primary me-2"></i>AptiPro Exam</span>
+                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-30 d-none d-md-inline-block fw-semibold">
+                    <i class="bi bi-record-circle-fill me-1"></i> AI Proctored
+                </span>
+            </div>
+
+            <!-- Countdown Timer Display -->
+            <div class="d-flex align-items-center gap-3">
+                <div class="timer-box" id="timerDisplay">
+                    <i class="bi bi-clock-history"></i> <span id="countdownText">60:00</span>
+                </div>
+
+                <div class="badge bg-warning bg-opacity-20 text-warning border border-warning border-opacity-30 px-3 py-2 rounded-pill fw-semibold" id="violationCountBadge">
+                    0 / 3 Warnings
+                </div>
+
+                <a href="{% url 'finish_exam' session.session_key %}" onclick="return confirm('Are you sure you want to finish and submit your exam?');" class="btn btn-gradient-danger btn-sm px-3 rounded-pill fw-semibold">
+                    <i class="bi bi-send me-1"></i> Submit Exam
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Exam Interface Body -->
+    <div class="container-fluid py-4 flex-grow-1">
+        <div class="row g-4">
+            
+            <!-- Left Panel: Active Question Card -->
+            <div class="col-lg-8 col-xl-9">
+                <div class="glass-card p-4 p-md-5 min-vh-75 d-flex flex-column justify-content-between">
+                    <div>
+                        <!-- Question Header -->
+                        <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom border-slate-200">
+                            <div>
+                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-20 fs-6 fw-semibold" id="qCategoryBadge">Category</span>
+                                <span class="badge bg-secondary bg-opacity-10 text-dark border border-secondary border-opacity-20 ms-2 fw-semibold" id="qDiffBadge">Difficulty</span>
+                            </div>
+                            <span class="fw-bold text-muted" id="qNumberTitle">Question 1 of 40</span>
+                        </div>
+
+                        <!-- Question Text (Large 21px Font) -->
+                        <h3 class="fw-bold mb-4 text-dark" id="qTextDisplay" style="font-size: 1.35rem;">Loading question...</h3>
+                        
+                        <!-- Code Snippet Display -->
+                        <div class="d-none mb-4" id="qCodeSnippetBox">
+                            <pre class="bg-light p-3 rounded border border-slate-200 text-primary font-monospace small"><code id="qCodeDisplay"></code></pre>
+                        </div>
+
+                        <!-- Options List (Large 18px Text Cards) -->
+                        <div class="row g-3" id="optionsContainer">
+                            <div class="col-md-6">
+                                <div class="option-card" onclick="selectOption('A')">
+                                    <div class="option-letter">A</div>
+                                    <div class="flex-grow-1 text-dark" id="optAText">Option A</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="option-card" onclick="selectOption('B')">
+                                    <div class="option-letter">B</div>
+                                    <div class="flex-grow-1 text-dark" id="optBText">Option B</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="option-card" onclick="selectOption('C')">
+                                    <div class="option-letter">C</div>
+                                    <div class="flex-grow-1 text-dark" id="optCText">Option C</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="option-card" onclick="selectOption('D')">
+                                    <div class="option-letter">D</div>
+                                    <div class="flex-grow-1 text-dark" id="optDText">Option D</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Nav Controls -->
+                    <div class="d-flex justify-content-between align-items-center pt-4 border-top border-slate-200 mt-4">
+                        <button class="btn btn-outline-secondary px-4 rounded-pill fw-semibold" id="prevBtn" onclick="navigateQuestion(-1)">
+                            <i class="bi bi-arrow-left me-1"></i> Previous
+                        </button>
+                        <button class="btn btn-outline-warning rounded-pill px-3 fw-semibold" onclick="clearOption()">
+                            <i class="bi bi-x-circle me-1"></i> Clear Response
+                        </button>
+                        <button class="btn btn-gradient-primary px-4 rounded-pill fw-semibold" id="nextBtn" onclick="navigateQuestion(1)">
+                            Next <i class="bi bi-arrow-right ms-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Live Camera & Question Palette Grid -->
+            <div class="col-lg-4 col-xl-3">
+                <div class="d-flex flex-column gap-3">
+                    
+                    <!-- Live Webcam Stream Card -->
+                    <div class="glass-card p-3 text-center">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="small text-muted fw-bold"><i class="bi bi-webcam text-success me-1"></i> AI Proctor Cam</span>
+                            <span class="badge bg-success bg-opacity-10 text-success fw-semibold">Active</span>
+                        </div>
+                        <div class="proctor-camera-container mx-auto">
+                            <video id="proctorWebcamVideo" autoplay playsinline muted></video>
+                            <span class="proctor-live-badge"><i class="bi bi-record-fill"></i> REC</span>
+                        </div>
+                    </div>
+
+                    <!-- Question Palette Navigation Grid -->
+                    <div class="glass-card p-3">
+                        <h6 class="fw-bold mb-3 d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-grid-3x3-gap-fill text-primary me-2"></i> Question Palette</span>
+                            <span class="badge bg-primary rounded-pill fw-bold" id="answeredCountBadge">0 / 40</span>
+                        </h6>
+                        
+                        <div class="d-flex flex-wrap gap-2 justify-content-start overflow-auto" style="max-height: 250px;" id="qPaletteGrid">
+                            <!-- Buttons rendered via JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Security Warning Modal -->
+    <div class="modal fade" id="securityWarningModal" data-bs-backdrop="static" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-card border-danger text-dark">
+                <div class="modal-header border-slate-200">
+                    <h5 class="modal-title text-danger fw-bold"><i class="bi bi-shield-exclamation me-2"></i> Security Violation Alert!</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <div class="badge bg-danger fs-5 px-4 py-2 rounded-pill mb-3" id="warningStrikeText">Strike 1 of 3</div>
+                    <p class="fs-6 text-dark mb-2" id="warningDescText">Exiting full screen mode is prohibited.</p>
+                    <p class="text-warning small mb-0 fw-semibold"><i class="bi bi-exclamation-triangle-fill me-1"></i> 3 violations will automatically terminate and submit your examination.</p>
+                </div>
+                <div class="modal-footer border-slate-200 justify-content-center">
+                    <button type="button" class="btn btn-danger px-4 rounded-pill fw-semibold" onclick="returnToExam()">
+                        Return to Full Screen & Continue
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS Responses Payload & Proctoring Script -->
+    <script>
+        const responsesData = [
+            {% for r in responses %}
+            {
+                id: {{ r.id }},
+                q_id: {{ r.question.id }},
+                category: "{{ r.question.category.name|escapejs }}",
+                difficulty: "{{ r.question.get_difficulty_display|escapejs }}",
+                text: "{{ r.question.question_text|escapejs }}",
+                code: "{{ r.question.code_snippet|default:''|escapejs }}",
+                options: {
+                    'A': "{{ r.shuffled_options.A.text|escapejs }}",
+                    'B': "{{ r.shuffled_options.B.text|escapejs }}",
+                    'C': "{{ r.shuffled_options.C.text|escapejs }}",
+                    'D': "{{ r.shuffled_options.D.text|escapejs }}"
+                },
+                selected: "{{ r.selected_option|default:'' }}"
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+        let currentIndex = 0;
+        let remainingSeconds = {{ remaining_seconds }};
+        const sessionKey = "{{ session.session_key }}";
+        const csrfToken = "{{ csrf_token }}";
+
+        let proctor = null;
+        window.addEventListener('DOMContentLoaded', () => {
+            renderQuestion(currentIndex);
+            buildPaletteGrid();
+            startTimer();
+
+            proctor = new ProctoringManager({
+                sessionKey: sessionKey,
+                analyzeFrameUrl: "{% url 'analyze_frame_api' %}",
+                logViolationUrl: "{% url 'log_violation_api' %}",
+                finishExamUrl: "{% url 'finish_exam' session.session_key %}",
+                csrfToken: csrfToken
+            });
+            
+            proctor.requestFullscreenMode();
+        });
+
+        function renderQuestion(index) {
+            currentIndex = index;
+            const item = responsesData[index];
+
+            document.getElementById('qNumberTitle').innerText = `Question ${index + 1} of ${responsesData.length}`;
+            document.getElementById('qCategoryBadge').innerText = item.category;
+            document.getElementById('qDiffBadge').innerText = item.difficulty;
+            document.getElementById('qTextDisplay').innerText = item.text;
+
+            const codeBox = document.getElementById('qCodeSnippetBox');
+            if (item.code) {
+                document.getElementById('qCodeDisplay').innerText = item.code;
+                codeBox.classList.remove('d-none');
+            } else {
+                codeBox.classList.add('d-none');
+            }
+
+            document.getElementById('optAText').innerText = item.options.A;
+            document.getElementById('optBText').innerText = item.options.B;
+            document.getElementById('optCText').innerText = item.options.C;
+            document.getElementById('optDText').innerText = item.options.D;
+
+            const cards = document.querySelectorAll('.option-card');
+            cards.forEach(c => c.classList.remove('selected'));
+
+            if (item.selected) {
+                const keys = ['A', 'B', 'C', 'D'];
+                const selIdx = keys.indexOf(item.selected);
+                if (selIdx >= 0) cards[selIdx].classList.add('selected');
+            }
+
+            document.getElementById('prevBtn').disabled = (index === 0);
+            document.getElementById('nextBtn').innerText = (index === responsesData.length - 1) ? 'Finish' : 'Next';
+
+            highlightActivePaletteBtn();
+        }
+
+        function selectOption(letter) {
+            const item = responsesData[currentIndex];
+            item.selected = letter;
+            renderQuestion(currentIndex);
+            updateAnsweredBadge();
+
+            fetch("{% url 'submit_response_api' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({
+                    response_id: item.id,
+                    selected_option: letter
+                })
+            });
+        }
+
+        function clearOption() {
+            const item = responsesData[currentIndex];
+            item.selected = '';
+            renderQuestion(currentIndex);
+            updateAnsweredBadge();
+
+            fetch("{% url 'submit_response_api' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({
+                    response_id: item.id,
+                    selected_option: null
+                })
+            });
+        }
+
+        function navigateQuestion(delta) {
+            let next = currentIndex + delta;
+            if (next >= 0 && next < responsesData.length) {
+                renderQuestion(next);
+            } else if (next >= responsesData.length) {
+                if (confirm('Finish and submit exam?')) {
+                    window.location.href = "{% url 'finish_exam' session.session_key %}";
+                }
+            }
+        }
+
+        function buildPaletteGrid() {
+            const grid = document.getElementById('qPaletteGrid');
+            grid.innerHTML = '';
+
+            responsesData.forEach((item, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `q-grid-btn ${item.selected ? 'answered' : ''}`;
+                btn.id = `palette-btn-${idx}`;
+                btn.innerText = idx + 1;
+                btn.onclick = () => renderQuestion(idx);
+                grid.appendChild(btn);
+            });
+            updateAnsweredBadge();
+        }
+
+        function highlightActivePaletteBtn() {
+            responsesData.forEach((item, idx) => {
+                const btn = document.getElementById(`palette-btn-${idx}`);
+                if (btn) {
+                    btn.classList.toggle('active', idx === currentIndex);
+                    btn.classList.toggle('answered', Boolean(item.selected));
+                }
+            });
+        }
+
+        function updateAnsweredBadge() {
+            const count = responsesData.filter(r => Boolean(r.selected)).length;
+            document.getElementById('answeredCountBadge').innerText = `${count} / ${responsesData.length}`;
+        }
+
+        function startTimer() {
+            const timerEl = document.getElementById('countdownText');
+            const interval = setInterval(() => {
+                remainingSeconds--;
+                if (remainingSeconds <= 0) {
+                    clearInterval(interval);
+                    alert("TIME EXPIRED: Automatically submitting your exam.");
+                    window.location.href = "{% url 'finish_exam' session.session_key %}";
+                } else {
+                    const mins = Math.floor(remainingSeconds / 60);
+                    const secs = remainingSeconds % 60;
+                    timerEl.innerText = `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                }
+            }, 1000);
+        }
+
+        function returnToExam() {
+            const modalEl = document.getElementById('securityWarningModal');
+            if (typeof bootstrap !== 'undefined') {
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) modal.hide();
+            }
+            if (proctor) proctor.requestFullscreenMode();
+        }
+    </script>
+
+    <script src="/static/js/proctoring.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
