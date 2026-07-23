@@ -1,0 +1,76 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}Results & Analytics Reports - Admin Console{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom border-slate-200 gap-3">
+    <div>
+        <h2 class="fw-bold mb-1 text-dark">Results & Analytics Reports</h2>
+        <p class="text-muted mb-0">System performance metrics and subject category accuracy breakdowns.</p>
+    </div>
+</div>
+
+<!-- Metrics Overview -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="glass-card p-4 text-center">
+            <h6 class="text-muted mb-2">Total Exam Attempts</h6>
+            <h2 class="fw-bold text-dark mb-0">{{ total_exams }}</h2>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="glass-card p-4 text-center">
+            <h6 class="text-muted mb-2">Completed Sessions</h6>
+            <h2 class="fw-bold text-success mb-0">{{ completed_exams }}</h2>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="glass-card p-4 text-center">
+            <h6 class="text-muted mb-2">System Average Score</h6>
+            <h2 class="fw-bold text-primary mb-0">{{ avg_score }}%</h2>
+        </div>
+    </div>
+</div>
+
+<!-- Subject Category Accuracy Table -->
+<div class="glass-card p-4">
+    <h5 class="fw-bold text-dark mb-3"><i class="bi bi-bar-chart-line text-primary me-2"></i> Category Accuracy Analytics</h5>
+    <div class="table-responsive">
+        <table class="table table-hover table-clean align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Category Subject</th>
+                    <th>Question Pool</th>
+                    <th>Total Student Responses</th>
+                    <th>Correct Responses</th>
+                    <th>Overall Accuracy Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cat in category_breakdown %}
+                <tr>
+                    <td class="fw-bold text-dark">
+                        <i class="bi {{ cat.icon }} me-1 text-primary"></i> {{ cat.name }}
+                    </td>
+                    <td>{{ cat.total_q }}</td>
+                    <td>{{ cat.responses_count }}</td>
+                    <td class="text-success fw-semibold">{{ cat.correct_count }}</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-primary font-monospace">
+                                {% if cat.responses_count > 0 %}
+                                {{ cat.correct_count|stringformat:"d" }} / {{ cat.responses_count }}
+                                {% else %}
+                                0.0%
+                                {% endif %}
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

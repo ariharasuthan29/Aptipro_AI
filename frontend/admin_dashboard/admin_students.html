@@ -1,0 +1,71 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}Student Management - Admin Console{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom border-slate-200 gap-3">
+    <div>
+        <h2 class="fw-bold mb-1 text-dark">Student Management</h2>
+        <p class="text-muted mb-0">Total Registered Candidates: <strong class="text-primary">{{ students|length }}</strong></p>
+    </div>
+</div>
+
+<!-- Search Bar -->
+<div class="glass-card p-3 mb-4">
+    <form method="GET" class="row g-2 align-items-center">
+        <div class="col-12 col-md-8">
+            <input type="text" name="search" class="form-control" placeholder="Search by student username, email, phone..." value="{{ search_q }}">
+        </div>
+        <div class="col-12 col-md-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-100 fw-semibold"><i class="bi bi-search me-1"></i> Search Students</button>
+            <a href="{% url 'admin_students' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-counterclockwise"></i></a>
+        </div>
+    </form>
+</div>
+
+<!-- Students List Table -->
+<div class="glass-card p-4">
+    <div class="table-responsive">
+        <table class="table table-hover table-clean align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Student Name</th>
+                    <th>Email / Phone</th>
+                    <th>Target Exam</th>
+                    <th>Exams Taken</th>
+                    <th>Highest Score</th>
+                    <th>Avg Score</th>
+                    <th>Rank Points</th>
+                    <th>Daily Streak</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for profile in students %}
+                <tr>
+                    <td class="text-muted">{{ forloop.counter }}</td>
+                    <td class="fw-bold text-dark">
+                        <i class="bi bi-person-circle me-1 text-primary"></i> {{ profile.user.username }}
+                    </td>
+                    <td>
+                        <div>{{ profile.user.email|default:"N/A" }}</div>
+                        <small class="text-muted">{{ profile.phone|default:"No phone" }}</small>
+                    </td>
+                    <td><span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-20">{{ profile.target_exam }}</span></td>
+                    <td>{{ profile.total_exams }}</td>
+                    <td class="fw-bold text-success">{{ profile.highest_score }}%</td>
+                    <td>{{ profile.average_score }}%</td>
+                    <td><span class="badge bg-warning text-dark font-monospace">{{ profile.total_points }} pts</span></td>
+                    <td><i class="bi bi-fire text-warning me-1"></i>{{ profile.daily_streak }} Days</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="text-center py-4 text-muted">No student profiles found matching query.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

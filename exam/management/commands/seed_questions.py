@@ -25,10 +25,17 @@ class Command(BaseCommand):
             ("Quantitative Aptitude", "bi-calculator", "Mathematical, numerical, and problem-solving aptitude questions."),
             ("Logical Reasoning", "bi-diagram-3", "Deductive logic, series completion, and pattern recognition."),
             ("Verbal Ability", "bi-chat-text", "English grammar, vocabulary, comprehension, and sentence structuring."),
-            ("Analytical Reasoning", "bi-cpu", "Complex puzzle solving, data relationships, and critical evaluation."),
             ("Data Interpretation", "bi-bar-chart-line", "Charts, tables, graphs analysis and numerical interpretation."),
-            ("Programming Basics", "bi-code-slash", "C/C++, Java, Python fundamentals, data structures, and output prediction."),
-            ("Placement Preparation Questions", "bi-briefcase", "Company specific placement patterns and general aptitude drills.")
+            ("Analytical Reasoning", "bi-cpu", "Complex puzzle solving, data relationships, and critical evaluation."),
+            ("Programming Fundamentals", "bi-code-slash", "C/C++, Java, Python fundamentals, data structures, and output prediction."),
+            ("Coding and Decoding", "bi-hash", "Coding, decoding, and ciphering aptitude questions."),
+            ("Number System", "bi-sort-numeric-down", "Numbers, divisibility, prime numbers, and numerical series."),
+            ("Percentage, Profit and Loss", "bi-percent", "Percentage, profit, loss, discount, and finance aptitude."),
+            ("Time and Work", "bi-calendar-range", "Time, work, rate, and group efficiency problem solving."),
+            ("Time, Speed and Distance", "bi-speedometer", "Train, speed, distance, and relative motion questions."),
+            ("Clocks and Calendars", "bi-clock", "Clock angles, calendar dates, and leap year calculations."),
+            ("Puzzles", "bi-puzzle", "Logical puzzles, seating arrangements, and riddle questions."),
+            ("Placement Mock Tests", "bi-file-earmark-check", "Comprehensive placement mock tests and company-specific preparation.")
         ]
 
         cat_objs = {}
@@ -210,9 +217,9 @@ class Command(BaseCommand):
                 "explanation": "Savings = 20% of $4,000 = 0.20 * 4000 = $800."
             },
 
-            # Programming Basics
+            # Programming Fundamentals
             {
-                "category": cat_objs["Programming Basics"],
+                "category": cat_objs["Programming Fundamentals"],
                 "difficulty": Question.EASY,
                 "question": "What is the output of `print(type([]) is list)` in Python?",
                 "option_a": "True", "option_b": "False", "option_c": "Error", "option_d": "<class 'list'>",
@@ -220,7 +227,7 @@ class Command(BaseCommand):
                 "explanation": "`[]` creates an empty list. Its type is `list`, so `type([]) is list` evaluates to `True`."
             },
             {
-                "category": cat_objs["Programming Basics"],
+                "category": cat_objs["Programming Fundamentals"],
                 "difficulty": Question.MEDIUM,
                 "question": "Which data structure operates on a Last In First Out (LIFO) basis?",
                 "option_a": "Queue", "option_b": "Stack", "option_c": "Tree", "option_d": "Array",
@@ -228,7 +235,7 @@ class Command(BaseCommand):
                 "explanation": "Stack uses LIFO order (Last-In, First-Out)."
             },
             {
-                "category": cat_objs["Programming Basics"],
+                "category": cat_objs["Programming Fundamentals"],
                 "difficulty": Question.HARD,
                 "question": "What is the worst-case time complexity of QuickSort?",
                 "option_a": "O(N log N)", "option_b": "O(N)", "option_c": "O(N^2)", "option_d": "O(log N)",
@@ -236,9 +243,9 @@ class Command(BaseCommand):
                 "explanation": "When the pivot choice is poor (e.g. already sorted array with smallest/largest element as pivot), QuickSort degrades to O(N^2)."
             },
 
-            # Placement Preparation Questions
+            # Placement Mock Tests
             {
-                "category": cat_objs["Placement Preparation Questions"],
+                "category": cat_objs["Placement Mock Tests"],
                 "difficulty": Question.EASY,
                 "question": "In a 100m race, A beats B by 10m and B beats C by 10m. By how many meters does A beat C?",
                 "option_a": "18m", "option_b": "19m", "option_c": "20m", "option_d": "21m",
@@ -246,7 +253,7 @@ class Command(BaseCommand):
                 "explanation": "When A covers 100m, B covers 90m. When B covers 100m, C covers 90m. When B covers 90m, C covers 81m. A beats C by 100 - 81 = 19m."
             },
             {
-                "category": cat_objs["Placement Preparation Questions"],
+                "category": cat_objs["Placement Mock Tests"],
                 "difficulty": Question.MEDIUM,
                 "question": "A man sold two chairs at Rs. 1200 each. On one he gained 20% and on the other he lost 20%. His net gain or loss percentage is:",
                 "option_a": "4% gain", "option_b": "4% loss", "option_c": "No profit no loss", "option_d": "2% loss",
@@ -276,9 +283,9 @@ class Command(BaseCommand):
             ("Analytical Reasoning", "If A is taller than B, B is taller than C, who is the shortest?", "A", "B", "C", "Cannot say", "C", "Order of height: A > B > C. C is shortest."),
 
             ("Data Interpretation", "If a graph shows monthly sales: Jan(100), Feb(150), Mar(200). What is total sales?", "400", "450", "500", "350", "B", "100 + 150 + 200 = 450."),
-            ("Programming Basics", "Which keyword is used to define a function in Python?", "func", "def", "function", "lambda", "B", "`def` keyword defines functions in Python."),
-            ("Programming Basics", "Which of the following is an immutable data type in Python?", "List", "Dictionary", "Tuple", "Set", "C", "Tuples cannot be changed once created (immutable)."),
-            ("Placement Preparation Questions", "What is the probability of getting a head on tossing an unbiased coin?", "1/4", "1/2", "3/4", "1", "B", "2 outcomes (H, T), 1 favorable outcome -> 1/2.")
+            ("Programming Fundamentals", "Which keyword is used to define a function in Python?", "func", "def", "function", "lambda", "B", "`def` keyword defines functions in Python."),
+            ("Programming Fundamentals", "Which of the following is an immutable data type in Python?", "List", "Dictionary", "Tuple", "Set", "C", "Tuples cannot be changed once created (immutable)."),
+            ("Placement Mock Tests", "What is the probability of getting a head on tossing an unbiased coin?", "1/4", "1/2", "3/4", "1", "B", "2 outcomes (H, T), 1 favorable outcome -> 1/2.")
         ]
 
         diff_cycle = [Question.EASY, Question.MEDIUM, Question.HARD]

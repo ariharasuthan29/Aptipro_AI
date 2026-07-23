@@ -1,131 +1,108 @@
-{% extends 'base.html' %}
+{% extends 'admin_base.html' %}
 
-{% block title %}Admin Control Dashboard - AptiPro AI{% endblock %}
+{% block title %}Dashboard Overview - Admin Console{% endblock %}
 
 {% block content %}
-<div class="admin-wrapper">
-    <!-- Left Sidebar Navigation -->
-    <aside class="admin-sidebar">
-        <h5 class="fw-bold mb-4 text-primary px-3"><i class="bi bi-shield-lock-fill me-2"></i> Admin Panel</h5>
-        
-        <nav class="d-flex flex-column w-100">
-            <a href="{% url 'admin_dashboard' %}" class="sidebar-nav-link active">
-                <i class="bi bi-speedometer2"></i> Overview Dashboard
-            </a>
-            <a href="{% url 'admin_questions' %}" class="sidebar-nav-link">
-                <i class="bi bi-card-checklist"></i> Manage Question Bank
-            </a>
-            <a href="{% url 'admin_violations' %}" class="sidebar-nav-link">
-                <i class="bi bi-camera-video"></i> Security & Violations
-            </a>
-            <a href="{% url 'export_sample_excel_template' %}" class="sidebar-nav-link text-success">
-                <i class="bi bi-file-earmark-excel"></i> Download Excel Template
-            </a>
-        </nav>
-    </aside>
+<!-- Header Banner -->
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom border-slate-200 gap-3">
+    <div>
+        <h2 class="fw-bold mb-1 text-dark">Administrator Control Center</h2>
+        <p class="text-muted mb-0">Overview metrics, question management, student progress, and live security logs.</p>
+    </div>
 
-    <!-- Right Main Content Area (uses remaining width) -->
-    <main class="admin-content">
-        <!-- Header -->
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom border-slate-200 gap-3">
-            <div>
-                <h2 class="fw-bold mb-1">Administrator Control Center</h2>
-                <p class="text-muted mb-0">Overview metrics, bulk importer, and real-time proctoring feeds.</p>
-            </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'export_sample_excel_template' %}" class="btn btn-outline-success rounded-pill px-3 py-2 btn-sm fw-semibold">
+            <i class="bi bi-download me-1"></i> Sample Template
+        </a>
+        <button type="button" class="btn btn-gradient-primary rounded-pill px-4 fw-semibold" data-bs-toggle="modal" data-bs-target="#excelImportModal">
+            <i class="bi bi-file-earmark-arrow-up-fill me-1"></i> Bulk Import Questions
+        </button>
+    </div>
+</div>
 
-            <div class="d-flex gap-2">
-                <!-- Bulk Import Modal Trigger -->
-                <button type="button" class="btn btn-gradient-primary rounded-pill px-4 fw-semibold" data-bs-toggle="modal" data-bs-target="#excelImportModal">
-                    <i class="bi bi-file-earmark-arrow-up-fill me-1"></i> Bulk Import Questions (Excel)
-                </button>
-            </div>
-        </div>
-
-        <!-- Metric Cards Grid -->
-        <div class="row g-3 mb-4">
-            <div class="col-12 col-md-6 col-xl-3">
-                <div class="glass-card p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="text-muted small fw-semibold">Registered Students</span>
-                        <i class="bi bi-people-fill text-primary fs-4"></i>
-                    </div>
-                    <h3 class="fw-bold mb-0 text-dark">{{ total_students }}</h3>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-xl-3">
-                <div class="glass-card p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="text-muted small fw-semibold">Question Bank Pool</span>
-                        <i class="bi bi-journal-check text-info fs-4"></i>
-                    </div>
-                    <h3 class="fw-bold mb-0 text-info">{{ total_questions }}</h3>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-xl-3">
-                <div class="glass-card p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="text-muted small fw-semibold">Exam Sessions</span>
-                        <i class="bi bi-laptop-fill text-success fs-4"></i>
-                    </div>
-                    <h3 class="fw-bold mb-0 text-success">{{ total_exams }}</h3>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-xl-3">
-                <div class="glass-card p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="text-muted small fw-semibold">Proctoring Violations</span>
-                        <i class="bi bi-exclamation-octagon-fill text-danger fs-4"></i>
-                    </div>
-                    <h3 class="fw-bold mb-0 text-danger">{{ total_violations }}</h3>
-                </div>
-            </div>
-        </div>
-
-        <!-- Live Violations Feed -->
+<!-- Metric Cards Grid -->
+<div class="row g-3 mb-4">
+    <div class="col-12 col-md-6 col-xl-3">
         <div class="glass-card p-4">
-            <h5 class="fw-bold text-danger mb-3 d-flex align-items-center gap-2">
-                <i class="bi bi-shield-alert"></i> Live Security & AI Violation Feed
-            </h5>
-            <div class="table-responsive">
-                <table class="table table-hover table-clean align-middle mb-0">
-                    <thead>
-                        <tr>
-                            <th>Time</th>
-                            <th>Student</th>
-                            <th>Violation Type</th>
-                            <th>Warning Level</th>
-                            <th>Details</th>
-                            <th>Camera Frame Snapshot</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for v in recent_violations %}
-                        <tr>
-                            <td>{{ v.timestamp|date:"M d, H:i:s" }}</td>
-                            <td class="fw-bold text-dark">{{ v.user.username }}</td>
-                            <td><span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-30">{{ v.get_violation_type_display }}</span></td>
-                            <td>Strike {{ v.warning_level }} of 3</td>
-                            <td class="small text-muted">{{ v.details }}</td>
-                            <td>
-                                {% if v.snapshot %}
-                                <a href="{{ v.snapshot.url }}" target="_blank" class="btn btn-sm btn-outline-danger rounded-pill fw-semibold">
-                                    <i class="bi bi-eye-fill me-1"></i> View Frame
-                                </a>
-                                {% else %}
-                                <span class="text-muted small">N/A</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="6" class="text-center py-4 text-muted">No security violations recorded yet. All exam sessions clean!</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted small fw-semibold">Total Students</span>
+                <i class="bi bi-people-fill text-primary fs-4"></i>
             </div>
+            <h3 class="fw-bold mb-0 text-dark">{{ total_students }}</h3>
         </div>
-    </main>
+    </div>
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="glass-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted small fw-semibold">Question Bank</span>
+                <i class="bi bi-journal-check text-info fs-4"></i>
+            </div>
+            <h3 class="fw-bold mb-0 text-info">{{ total_questions }}</h3>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="glass-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted small fw-semibold">Exam Sessions</span>
+                <i class="bi bi-laptop-fill text-success fs-4"></i>
+            </div>
+            <h3 class="fw-bold mb-0 text-success">{{ total_exams }}</h3>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="glass-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted small fw-semibold">Proctoring Violations</span>
+                <i class="bi bi-exclamation-octagon-fill text-danger fs-4"></i>
+            </div>
+            <h3 class="fw-bold mb-0 text-danger">{{ total_violations }}</h3>
+        </div>
+    </div>
+</div>
+
+<!-- Live Violations Feed Table -->
+<div class="glass-card p-4">
+    <h5 class="fw-bold text-danger mb-3 d-flex align-items-center gap-2">
+        <i class="bi bi-shield-alert"></i> Live Security & AI Violation Log
+    </h5>
+    <div class="table-responsive">
+        <table class="table table-hover table-clean align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Student</th>
+                    <th>Violation Type</th>
+                    <th>Warning Level</th>
+                    <th>Details</th>
+                    <th>Snapshot</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for v in recent_violations %}
+                <tr>
+                    <td class="text-muted small">{{ v.timestamp|date:"M d, H:i:s" }}</td>
+                    <td class="fw-bold text-dark">{{ v.user.username }}</td>
+                    <td><span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-30">{{ v.get_violation_type_display }}</span></td>
+                    <td>Strike {{ v.warning_level }} of 3</td>
+                    <td class="small text-muted">{{ v.details }}</td>
+                    <td>
+                        {% if v.snapshot %}
+                        <a href="{{ v.snapshot.url }}" target="_blank" class="btn btn-sm btn-outline-danger rounded-pill fw-semibold">
+                            <i class="bi bi-eye-fill me-1"></i> View Frame
+                        </a>
+                        {% else %}
+                        <span class="text-muted small">N/A</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center py-4 text-muted">No security violations recorded yet. All exam sessions clean!</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <!-- Bulk Excel Question Import Modal -->

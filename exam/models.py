@@ -4,7 +4,15 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 class UserProfile(models.Model):
+    ROLE_STUDENT = 'STUDENT'
+    ROLE_ADMIN = 'ADMIN'
+    ROLE_CHOICES = [
+        (ROLE_STUDENT, 'Student'),
+        (ROLE_ADMIN, 'Administrator'),
+    ]
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=ROLE_STUDENT)
     phone = models.CharField(max_length=15, blank=True, null=True)
     target_exam = models.CharField(max_length=100, default='Placement Examination')
     daily_streak = models.PositiveIntegerField(default=1)
@@ -15,8 +23,12 @@ class UserProfile(models.Model):
     total_points = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def is_admin_role(self):
+        return self.role == self.ROLE_ADMIN or self.user.is_staff or self.user.is_superuser
+
     def __str__(self):
-        return f"{self.user.username}'s Profile"
+        return f"{self.user.username}'s Profile ({self.role})"
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)

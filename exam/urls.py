@@ -11,7 +11,9 @@ urlpatterns = [
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('practice/', views.practice_view, name='practice'),
     path('practice/submit/', views.submit_practice_view, name='submit_practice'),
+    path('practice/validate-answer/', views.validate_practice_answer_view, name='validate_practice_answer'),
     path('leaderboard/', views.leaderboard_view, name='leaderboard'),
+    path('profile/', views.profile_view, name='profile'),
 
     # Exam Module
     path('exam/start/', views.exam_start_view, name='exam_start'),
@@ -25,10 +27,15 @@ urlpatterns = [
     path('api/proctor/analyze-frame/', views.analyze_frame_api, name='analyze_frame_api'),
     path('api/proctor/log-violation/', views.log_violation_api, name='log_violation_api'),
 
-    # Admin Control Panel & Excel Importer
+    # Admin Control Panel & Management Console
     path('admin-dashboard/', views.admin_dashboard_view, name='admin_dashboard'),
+    path('admin-dashboard/students/', views.admin_students_view, name='admin_students'),
     path('admin-dashboard/questions/', views.admin_questions_view, name='admin_questions'),
+    path('admin-dashboard/categories/', views.admin_categories_view, name='admin_categories'),
+    path('admin-dashboard/exams/', views.admin_exams_view, name='admin_exams'),
+    path('admin-dashboard/reports/', views.admin_reports_view, name='admin_reports'),
     path('admin-dashboard/violations/', views.admin_violations_view, name='admin_violations'),
+    path('admin-dashboard/settings/', views.admin_settings_view, name='admin_settings'),
     path('admin-dashboard/export-sample-template/', views.export_sample_excel_template_view, name='export_sample_excel_template'),
     path('admin-dashboard/import-questions/', views.import_excel_questions_view, name='import_excel_questions'),
 ]

@@ -19,9 +19,33 @@ from .models import (
 )
 from .proctoring import analyze_webcam_frame
 
-# --- Helper Functions ---
+from functools import wraps
+
+# --- Helper Functions & Authorization Decorators ---
 def is_admin(user):
-    return user.is_authenticated and (user.is_staff or user.is_superuser)
+    return user.is_authenticated and (user.is_staff or user.is_superuser or (hasattr(user, 'profile') and user.profile.role == UserProfile.ROLE_ADMIN))
+
+def admin_required(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, "Please log in with administrator credentials.")
+            return redirect('login')
+        if not is_admin(request.user):
+            messages.error(request, "Access Denied: Only authorized administrator accounts can access the Admin Panel.")
+            return redirect('dashboard')
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
+
+def student_required(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+        if is_admin(request.user):
+            return redirect('admin_dashboard')
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
 
 def track_daily_login(user):
     today = timezone.now().date()
@@ -78,6 +102,8 @@ def register_view(request):
 
 def login_view(request):
     if request.user.is_authenticated:
+        if is_admin(request.user):
+            return redirect('admin_dashboard')
         return redirect('dashboard')
         
     if request.method == 'POST':
@@ -89,7 +115,7 @@ def login_view(request):
             login(request, user)
             track_daily_login(user)
             messages.success(request, f"Welcome back, {user.username}!")
-            if user.is_staff or user.is_superuser:
+            if is_admin(user):
                 return redirect('admin_dashboard')
             return redirect('dashboard')
         else:
@@ -105,7 +131,7 @@ def logout_view(request):
 
 
 # --- Student Dashboard & Analytics Views ---
-@login_required
+@student_required
 def dashboard_view(request):
     track_daily_login(request.user)
     user = request.user
@@ -129,7 +155,7 @@ def dashboard_view(request):
         chart_scores.append(round(s.percentage, 1))
         
     # Category Breakdown Performance
-    categories = Category.objects.all()
+    categories = Category.objects.all().order_by('name')
     cat_performance = []
     for cat in categories:
         resp = ExamQuestionResponse.objects.filter(exam_session__user=user, question__category=cat)
@@ -165,7 +191,7 @@ def dashboard_view(request):
 
 
 # --- Daily Practice Module ---
-@login_required
+@student_required
 def practice_view(request):
     category_id = request.GET.get('category')
     difficulty = request.GET.get('difficulty')
@@ -185,7 +211,7 @@ def practice_view(request):
     
     context = {
         'questions': questions,
-        'categories': Category.objects.all(),
+        'categories': Category.objects.all().order_by('name'),
         'selected_category': selected_category,
         'selected_difficulty': difficulty,
     }
@@ -193,14 +219,14 @@ def practice_view(request):
 
 
 # --- Randomized Examination Module & Anti-Cheating System ---
-@login_required
+@student_required
 def exam_start_view(request):
     # Check if active uncompleted session exists
     active_session = ExamSession.objects.filter(user=request.user, status=ExamSession.IN_PROGRESS).first()
     if active_session:
         return redirect('exam_room', session_key=active_session.session_key)
         
-    categories_count = Category.objects.annotate(q_count=Count('questions'))
+    categories_count = Category.objects.annotate(q_count=Count('questions')).order_by('name')
     total_q_in_db = Question.objects.count()
     
     context = {
@@ -498,7 +524,7 @@ def result_view(request, session_key):
 
 
 # --- Leaderboard Module ---
-@login_required
+@student_required
 def leaderboard_view(request):
     timeframe = request.GET.get('timeframe', 'overall') # overall, monthly, weekly
     
@@ -551,7 +577,7 @@ def leaderboard_view(request):
 
 
 # --- Admin Panel & Excel Question Importer ---
-@user_passes_test(is_admin)
+@admin_required
 def admin_dashboard_view(request):
     total_students = User.objects.filter(is_staff=False).count()
     total_questions = Question.objects.count()
@@ -571,7 +597,7 @@ def admin_dashboard_view(request):
     }
     return render(request, 'admin_dashboard.html', context)
 
-@user_passes_test(is_admin)
+@admin_required
 def admin_questions_view(request):
     category_id = request.GET.get('category')
     difficulty = request.GET.get('difficulty')
@@ -616,14 +642,14 @@ def admin_questions_view(request):
 
     context = {
         'questions': questions,
-        'categories': Category.objects.all(),
+        'categories': Category.objects.all().order_by('name'),
         'selected_category': category_id,
         'selected_difficulty': difficulty,
         'search_q': search_q,
     }
     return render(request, 'admin_questions.html', context)
 
-@user_passes_test(is_admin)
+@admin_required
 def admin_violations_view(request):
     violations = ViolationLog.objects.select_related('user', 'exam_session').order_by('-timestamp')
     context = {
@@ -631,7 +657,7 @@ def admin_violations_view(request):
     }
     return render(request, 'admin_violations.html', context)
 
-@user_passes_test(is_admin)
+@admin_required
 def export_sample_excel_template_view(request):
     wb = openpyxl.Workbook()
     ws = wb.active
@@ -643,7 +669,7 @@ def export_sample_excel_template_view(request):
     sample_rows = [
         ["Quantitative Aptitude", "EASY", "What is 12 + 15?", "25", "27", "30", "22", "B", "12 + 15 = 27."],
         ["Logical Reasoning", "MEDIUM", "Find next in series: 2, 4, 8, 16, ?", "24", "32", "64", "20", "B", "Multiply by 2 each step."],
-        ["Programming Basics", "HARD", "What is the worst-case time complexity of QuickSort?", "O(N log N)", "O(N)", "O(N^2)", "O(1)", "C", "Degrades to O(N^2) on bad pivot choices."]
+        ["Programming Fundamentals", "HARD", "What is the worst-case time complexity of QuickSort?", "O(N log N)", "O(N)", "O(N^2)", "O(1)", "C", "Degrades to O(N^2) on bad pivot choices."]
     ]
     for row in sample_rows:
         ws.append(row)
@@ -653,7 +679,38 @@ def export_sample_excel_template_view(request):
     wb.save(response)
     return response
 
-@user_passes_test(is_admin)
+
+def classify_question_text(text):
+    text_lower = text.lower()
+    if any(k in text_lower for k in ["code", "program", "print(", "class ", "function", "variable", "java", "python", "worst-case", "time complexity", "data structure", "quicksort", "stack", "queue"]):
+        return "Programming Fundamentals"
+    if any(k in text_lower for k in ["coded as", "code for", "written as", "decoding", "in a certain code"]):
+        return "Coding and Decoding"
+    if any(k in text_lower for k in ["clock", "calendar", "leap year", "angle between"]):
+        return "Clocks and Calendars"
+    if any(k in text_lower for k in ["percent", "%", "profit", "loss", "sold", "cost price", "selling price", "discount", "gain"]):
+        return "Percentage, Profit and Loss"
+    if any(k in text_lower for k in ["work", "complete the job", "complete a piece", "efficiency", "task"]):
+        if any(k in text_lower for k in ["day", "hour", "time"]):
+            return "Time and Work"
+    if any(k in text_lower for k in ["speed", "distance", "train", "km/h", "m/s", "travels", "velocity"]):
+        return "Time, Speed and Distance"
+    if any(k in text_lower for k in ["puzzle", "seating", "sitting", "bench", "circle", "facing"]):
+        return "Puzzles"
+    if any(k in text_lower for k in ["prime number", "integer", "divisible", "remainder", "hcf", "lcm", "digit", "series", "missing number", "odd one out", "next in series"]):
+        return "Number System"
+    if any(k in text_lower for k in ["synonym", "antonym", "spelling", "sentence", "grammar", "preposition", "vocabulary"]):
+        return "Verbal Ability"
+    if any(k in text_lower for k in ["graph", "pie chart", "bar chart", "expenditure", "income"]):
+        return "Data Interpretation"
+    if any(k in text_lower for k in ["statement", "conclusion", "relation", "mother", "father", "sister", "brother", "son", "daughter", "grandchild"]):
+        return "Analytical Reasoning"
+    if any(k in text_lower for k in ["average", "ratio", "proportion", "interest", "simple interest", "compound interest", "sum", "math"]):
+        return "Quantitative Aptitude"
+    return "Logical Reasoning"
+
+
+@admin_required
 def import_excel_questions_view(request):
     if request.method == 'POST' and request.FILES.get('excel_file'):
         file = request.FILES['excel_file']
@@ -674,11 +731,28 @@ def import_excel_questions_view(request):
                 messages.warning(request, "Excel file appears to be empty or has only headers.")
                 return redirect('admin_questions')
                 
+            canonical_categories = {
+                "Quantitative Aptitude": ("bi-calculator", "Mathematical, numerical, and problem-solving aptitude questions."),
+                "Logical Reasoning": ("bi-diagram-3", "Deductive logic, series completion, and pattern recognition."),
+                "Verbal Ability": ("bi-chat-text", "English grammar, vocabulary, comprehension, and sentence structuring."),
+                "Data Interpretation": ("bi-bar-chart-line", "Charts, tables, graphs analysis and numerical interpretation."),
+                "Analytical Reasoning": ("bi-cpu", "Complex puzzle solving, data relationships, and critical evaluation."),
+                "Programming Fundamentals": ("bi-code-slash", "C/C++, Java, Python fundamentals, data structures, and output prediction."),
+                "Coding and Decoding": ("bi-hash", "Coding, decoding, and ciphering aptitude questions."),
+                "Number System": ("bi-sort-numeric-down", "Numbers, divisibility, prime numbers, and numerical series."),
+                "Percentage, Profit and Loss": ("bi-percent", "Percentage, profit, loss, discount, and finance aptitude."),
+                "Time and Work": ("bi-calendar-range", "Time, work, rate, and group efficiency problem solving."),
+                "Time, Speed and Distance": ("bi-speedometer", "Train, speed, distance, and relative motion questions."),
+                "Clocks and Calendars": ("bi-clock", "Clock angles, calendar dates, and leap year calculations."),
+                "Puzzles": ("bi-puzzle", "Logical puzzles, seating arrangements, and riddle questions."),
+                "Placement Mock Tests": ("bi-file-earmark-check", "Comprehensive placement mock tests and company-specific preparation.")
+            }
+            
             for row_idx, row in enumerate(rows[1:], start=2):
                 if not any(row):
                     continue
                     
-                cat_name = str(row[0]).strip() if len(row) > 0 and row[0] else 'General Aptitude'
+                raw_cat_name = str(row[0]).strip() if len(row) > 0 and row[0] else ''
                 diff_val = str(row[1]).strip().upper() if len(row) > 1 and row[1] else 'EASY'
                 q_text = str(row[2]).strip() if len(row) > 2 and row[2] else ''
                 op_a = str(row[3]).strip() if len(row) > 3 and row[3] else ''
@@ -692,14 +766,25 @@ def import_excel_questions_view(request):
                     skipped_count += 1
                     continue
                     
+                # Canonicalize/map category
+                if raw_cat_name == "Programming Basics":
+                    cat_name = "Programming Fundamentals"
+                elif raw_cat_name == "Placement Preparation Questions":
+                    cat_name = "Placement Mock Tests"
+                elif raw_cat_name in canonical_categories:
+                    cat_name = raw_cat_name
+                else:
+                    cat_name = classify_question_text(q_text)
+                    
                 if diff_val not in ['EASY', 'MEDIUM', 'HARD']:
                     diff_val = 'EASY'
                 if correct not in ['A', 'B', 'C', 'D']:
                     correct = 'A'
                     
+                cat_icon, cat_desc = canonical_categories[cat_name]
                 cat_obj, _ = Category.objects.get_or_create(
                     name=cat_name,
-                    defaults={'slug': f"{slugify(cat_name)}-{row_idx}", 'icon': 'bi-journal-check'}
+                    defaults={'slug': slugify(cat_name), 'icon': cat_icon, 'description': cat_desc}
                 )
                 
                 Question.objects.create(
@@ -753,7 +838,7 @@ def submit_practice_view(request):
     # Award points: +2 points per correct answer!
     profile = request.user.profile
     points_gained = correct_count * 2
-    profile.points += points_gained
+    profile.total_points += points_gained
     profile.save()
     
     context = {
@@ -762,9 +847,128 @@ def submit_practice_view(request):
         'total_count': total_count,
         'percentage': pct,
         'points_gained': points_gained,
-        'total_points': profile.points,
+        'total_points': profile.total_points,
     }
     return render(request, 'practice_result.html', context)
+
+
+@login_required
+def validate_practice_answer_view(request):
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'Invalid method'}, status=405)
+        
+    try:
+        data = json.loads(request.body)
+        q_id = data.get('question_id')
+        selected_option = data.get('selected_option', '').upper()
+        
+        q = get_object_or_404(Question, id=q_id)
+        is_correct = (selected_option == q.correct_option)
+        
+        return JsonResponse({
+            'status': 'success',
+            'is_correct': is_correct,
+            'correct_option': q.correct_option,
+            'explanation': q.explanation or "Detailed solution for this problem."
+        })
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+
+@student_required
+def profile_view(request):
+    user = request.user
+    profile, _ = UserProfile.objects.get_or_create(user=user)
+    activities = DailyActivity.objects.filter(user=user).order_by('-date')[:7]
+    context = {
+        'user': user,
+        'profile': profile,
+        'activities': activities,
+    }
+    return render(request, 'profile.html', context)
+
+
+@admin_required
+def admin_students_view(request):
+    search_q = request.GET.get('search', '').strip()
+    students = UserProfile.objects.select_related('user').filter(user__is_staff=False)
+    
+    if search_q:
+        students = students.filter(
+            Q(user__username__icontains=search_q) |
+            Q(user__email__icontains=search_q) |
+            Q(phone__icontains=search_q)
+        )
+        
+    context = {
+        'students': students.order_by('-created_at'),
+        'search_q': search_q,
+    }
+    return render(request, 'admin_students.html', context)
+
+
+@admin_required
+def admin_categories_view(request):
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'add':
+            name = request.POST.get('name', '').strip()
+            icon = request.POST.get('icon', 'bi-journal-code').strip()
+            desc = request.POST.get('description', '').strip()
+            if name:
+                Category.objects.create(name=name, slug=slugify(name), icon=icon, description=desc)
+                messages.success(request, f"Category '{name}' created successfully.")
+            return redirect('admin_categories')
+            
+    categories = Category.objects.annotate(q_count=Count('questions')).order_by('name')
+    context = {
+        'categories': categories
+    }
+    return render(request, 'admin_categories.html', context)
+
+
+@admin_required
+def admin_exams_view(request):
+    sessions = ExamSession.objects.select_related('user').all().order_by('-start_time')
+    context = {
+        'sessions': sessions
+    }
+    return render(request, 'admin_exams.html', context)
+
+
+@admin_required
+def admin_reports_view(request):
+    total_exams = ExamSession.objects.count()
+    completed_exams = ExamSession.objects.filter(status=ExamSession.COMPLETED).count()
+    avg_score = ExamSession.objects.filter(status=ExamSession.COMPLETED).aggregate(Avg('percentage'))['percentage__avg'] or 0.0
+    
+    category_breakdown = Category.objects.annotate(
+        total_q=Count('questions'),
+        responses_count=Count('questions__examquestionresponse'),
+        correct_count=Count('questions__examquestionresponse', filter=Q(questions__examquestionresponse__is_correct=True))
+    ).order_by('name')
+    
+    context = {
+        'total_exams': total_exams,
+        'completed_exams': completed_exams,
+        'avg_score': round(avg_score, 1),
+        'category_breakdown': category_breakdown,
+    }
+    return render(request, 'admin_reports.html', context)
+
+
+@admin_required
+def admin_settings_view(request):
+    if request.method == 'POST':
+        messages.success(request, "System settings updated successfully.")
+        return redirect('admin_settings')
+        
+    context = {
+        'exam_duration': 60,
+        'max_violations': 3,
+        'pass_percentage': 50,
+    }
+    return render(request, 'admin_settings.html', context)
 
 
 

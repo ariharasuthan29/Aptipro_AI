@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Profile - AptiPro{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header Banner -->
+    <div class="glass-card p-4 mb-4 bg-gradient-primary text-white position-relative overflow-hidden">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="bg-white text-primary fw-bold rounded-circle d-flex align-items-center justify-content-center shadow-lg" style="width: 70px; height: 70px; font-size: 2rem;">
+                    {{ user.username|slice:":1"|upper }}
+                </div>
+                <div>
+                    <h2 class="fw-bold mb-1 text-white">{{ user.username }}</h2>
+                    <p class="mb-0 text-white-50"><i class="bi bi-mortarboard-fill me-1"></i> Target Exam: {{ profile.target_exam }}</p>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <span class="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill font-monospace shadow-sm">
+                    <i class="bi bi-fire me-1"></i> {{ profile.daily_streak }} Day Streak
+                </span>
+                <span class="badge bg-white text-primary fs-6 px-3 py-2 rounded-pill font-monospace shadow-sm">
+                    <i class="bi bi-trophy-fill text-warning me-1"></i> {{ profile.total_points }} Rank Points
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-md-4">
+            <div class="glass-card p-4 text-center">
+                <span class="text-muted small fw-semibold d-block mb-1">Total Exams Completed</span>
+                <h3 class="fw-bold text-dark mb-0">{{ profile.total_exams }}</h3>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="glass-card p-4 text-center">
+                <span class="text-muted small fw-semibold d-block mb-1">Highest Score Achieved</span>
+                <h3 class="fw-bold text-success mb-0">{{ profile.highest_score }}%</h3>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="glass-card p-4 text-center">
+                <span class="text-muted small fw-semibold d-block mb-1">Average Exam Score</span>
+                <h3 class="fw-bold text-primary mb-0">{{ profile.average_score }}%</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Details Card -->
+    <div class="glass-card p-4 mb-4">
+        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-person-lines-fill text-primary me-2"></i> Account Details</h5>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="text-muted small">Username</label>
+                <div class="fw-bold text-dark fs-6">{{ user.username }}</div>
+            </div>
+            <div class="col-md-6">
+                <label class="text-muted small">Email Address</label>
+                <div class="fw-bold text-dark fs-6">{{ user.email|default:"Not provided" }}</div>
+            </div>
+            <div class="col-md-6">
+                <label class="text-muted small">Phone Number</label>
+                <div class="fw-bold text-dark fs-6">{{ profile.phone|default:"Not provided" }}</div>
+            </div>
+            <div class="col-md-6">
+                <label class="text-muted small">Account Created</label>
+                <div class="fw-bold text-dark fs-6">{{ profile.created_at|date:"F d, Y" }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
