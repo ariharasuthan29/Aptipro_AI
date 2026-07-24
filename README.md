@@ -4,6 +4,15 @@ AptiPro AI is a comprehensive, production-grade Web Application built with **Dja
 
 ---
 
+## 🌐 Quick Access Links
+
+* **Live Web Application**: [https://aptipro-ai.onrender.com/](https://aptipro-ai.onrender.com/)
+* **User Login**: [https://aptipro-ai.onrender.com/](https://aptipro-ai.onrender.com/)
+* **User Registration**: [https://aptipro-ai.onrender.com/register/](https://aptipro-ai.onrender.com/register/)
+* **Local Development Server**: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+
+---
+
 ## 🌟 Key Features
 
 ### 🎓 Student Module
@@ -67,13 +76,7 @@ python manage.py seed_questions
 python manage.py runserver 8000
 ```
 
-Access the application at `http://127.0.0.1:8000/`
-
----
-
-## 🔐 Credentials (Default Seeded Admin)
-- **Username**: `admin`
-- **Password**: `admin123`
+Access locally at `http://127.0.0.1:8000/`
 
 ---
 
