@@ -3,7 +3,7 @@
    Optimized for Laptops, Desktops, Tablets & Mobile Devices
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
     --bg-main: #f8fafc;
@@ -19,7 +19,7 @@
     --text-primary: #0f172a;
     --text-body: #334155;
     --text-muted: #64748b;
-    --font-family-base: 'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-family-base: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --sidebar-width: 260px;
 }
 
@@ -27,7 +27,8 @@ body {
     background-color: var(--bg-main);
     color: var(--text-body);
     font-family: var(--font-family-base);
-    font-size: 1.05rem; /* 17px base for readability */
+    font-size: 16px;
+    font-weight: 500;
     line-height: 1.6;
     min-height: 100vh;
     display: flex;
@@ -35,29 +36,75 @@ body {
     overflow-x: hidden;
 }
 
-/* Global Full-Width Container & Main Content Overrides */
-.container {
-    max-width: 100% !important;
-}
-
-.main-content {
-    width: 100%;
-    padding: 20px 30px;
-}
-
 /* Headings Typography */
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-    color: var(--text-primary) !important;
-    font-family: 'Plus Jakarta Sans', var(--font-family-base);
-    font-weight: 700;
-    letter-spacing: -0.4px;
+    color: var(--text-primary);
+    font-family: 'Poppins', var(--font-family-base);
+    font-weight: 600;
+    letter-spacing: -0.3px;
 }
 
-h1, .h1 { font-size: 2.25rem; }
-h2, .h2 { font-size: 1.85rem; }
-h3, .h3 { font-size: 1.55rem; }
-h4, .h4 { font-size: 1.35rem; }
-h5, .h5 { font-size: 1.18rem; }
+/* Global Typography Class Specs */
+.navbar-brand-logo { font-size: 28px !important; font-weight: 700 !important; font-family: 'Poppins', sans-serif !important; }
+.navbar-nav .nav-link { font-size: 16px !important; font-weight: 500 !important; }
+.nav-username { font-size: 16px !important; font-weight: 600 !important; }
+.nav-dropdown-item { font-size: 15px !important; font-weight: 500 !important; }
+.btn-logout-text { font-size: 14px !important; font-weight: 600 !important; }
+
+.page-title-lg { font-size: 36px !important; font-weight: 700 !important; line-height: 1.25 !important; }
+.page-desc-lg { font-size: 18px !important; font-weight: 500 !important; color: #64748b !important; }
+.section-title-md { font-size: 24px !important; font-weight: 600 !important; }
+.sub-header-title { font-size: 24px !important; font-weight: 600 !important; }
+
+.card-title-sm { font-size: 16px !important; font-weight: 600 !important; color: #64748b !important; }
+.stat-value-lg { font-size: 32px !important; font-weight: 700 !important; line-height: 1.2 !important; }
+.stat-value-secondary { font-size: 18px !important; font-weight: 600 !important; }
+.card-footer-text { font-size: 14px !important; font-weight: 500 !important; color: #64748b !important; }
+
+.form-label { font-size: 16px !important; font-weight: 600 !important; color: #0f172a; }
+.form-control, .form-select { font-size: 16px !important; font-weight: 500 !important; }
+.form-control::placeholder { font-size: 15px !important; font-weight: 400 !important; }
+.form-validation-msg { font-size: 14px !important; font-weight: 500 !important; }
+
+.btn { font-size: 16px !important; font-weight: 600 !important; }
+.btn-sm { font-size: 14px !important; font-weight: 600 !important; }
+
+.table th { font-size: 16px !important; font-weight: 600 !important; color: #475569; }
+.table td { font-size: 15px !important; font-weight: 500 !important; }
+.table .btn-action { font-size: 15px !important; font-weight: 600 !important; }
+
+.practice-question-text { font-size: 22px !important; font-weight: 600 !important; line-height: 1.5 !important; }
+.practice-option-text { font-size: 18px !important; font-weight: 500 !important; }
+.practice-explanation-text { font-size: 17px !important; font-weight: 500 !important; line-height: 1.6 !important; }
+.practice-category-label { font-size: 15px !important; font-weight: 600 !important; }
+
+.exam-q-number { font-size: 18px !important; font-weight: 600 !important; }
+.exam-q-text { font-size: 24px !important; font-weight: 600 !important; line-height: 1.5 !important; }
+.exam-option-text { font-size: 18px !important; font-weight: 500 !important; }
+.exam-timer-text { font-size: 24px !important; font-weight: 700 !important; }
+.exam-violation-alert { font-size: 16px !important; font-weight: 600 !important; }
+
+.chart-title-lg { font-size: 24px !important; font-weight: 600 !important; }
+.leaderboard-rank { font-size: 22px !important; font-weight: 700 !important; }
+.leaderboard-username { font-size: 18px !important; font-weight: 600 !important; }
+.leaderboard-score { font-size: 16px !important; font-weight: 600 !important; }
+
+.admin-nav .nav-link { font-size: 16px !important; font-weight: 500 !important; }
+.admin-stat-value { font-size: 32px !important; font-weight: 700 !important; }
+
+/* Responsive Media Specs */
+@media (max-width: 991.98px) {
+    h1, .page-title-lg { font-size: 30px !important; }
+    h2, .section-title-md, .sub-header-title { font-size: 20px !important; }
+}
+
+@media (max-width: 576px) {
+    body { font-size: 15px !important; }
+    .page-title-lg { font-size: 26px !important; }
+    .practice-question-text { font-size: 18px !important; }
+    .exam-q-text { font-size: 18px !important; }
+    .stat-value-lg { font-size: 26px !important; }
+}
 
 /* Remove excessive white space and container constraints */
 .container-fluid-full {

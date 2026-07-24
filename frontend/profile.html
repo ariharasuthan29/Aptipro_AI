@@ -1,73 +1,179 @@
 {% extends 'base.html' %}
 
-{% block title %}Student Profile - AptiPro{% endblock %}
+{% block title %}Student Profile & Performance Dashboard - AptiPro{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <!-- Header Banner -->
-    <div class="glass-card p-4 mb-4 bg-gradient-primary text-white position-relative overflow-hidden">
-        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+<div class="container-fluid px-3 px-md-4 py-4" style="max-width: 88%; margin: 0 auto;">
+    
+    <!-- Section 1: Profile Overview Banner -->
+    <div class="glass-card p-4 mb-4 bg-gradient-primary text-white position-relative overflow-hidden shadow-sm" style="border-radius: 16px;">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-4 p-2">
             <div class="d-flex align-items-center gap-3">
-                <div class="bg-white text-primary fw-bold rounded-circle d-flex align-items-center justify-content-center shadow-lg" style="width: 70px; height: 70px; font-size: 2rem;">
+                <div class="bg-white text-primary fw-bold rounded-circle d-flex align-items-center justify-content-center shadow" style="width: 80px; height: 80px; font-size: 2.25rem; flex-shrink: 0;">
                     {{ user.username|slice:":1"|upper }}
                 </div>
                 <div>
-                    <h2 class="fw-bold mb-1 text-white">{{ user.username }}</h2>
-                    <p class="mb-0 text-white-50"><i class="bi bi-mortarboard-fill me-1"></i> Target Exam: {{ profile.target_exam }}</p>
+                    <h1 class="fw-bold mb-1 text-white" style="font-size: 32px; font-weight: 700;">{{ user.username }}</h1>
+                    <p class="mb-0 text-white-50" style="font-size: 18px; font-weight: 500;">
+                        <i class="bi bi-mortarboard-fill me-1"></i> Target Exam: <strong>{{ profile.target_exam }}</strong>
+                    </p>
                 </div>
             </div>
-            <div class="d-flex gap-2">
-                <span class="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill font-monospace shadow-sm">
+            <div class="d-flex flex-wrap gap-3 align-items-center">
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill font-monospace shadow-sm" style="font-size: 16px; font-weight: 600;">
                     <i class="bi bi-fire me-1"></i> {{ profile.daily_streak }} Day Streak
                 </span>
-                <span class="badge bg-white text-primary fs-6 px-3 py-2 rounded-pill font-monospace shadow-sm">
+                <span class="badge bg-white text-primary px-3 py-2 rounded-pill font-monospace shadow-sm" style="font-size: 16px; font-weight: 600;">
                     <i class="bi bi-trophy-fill text-warning me-1"></i> {{ profile.total_points }} Rank Points
                 </span>
             </div>
         </div>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="row g-3 mb-4">
-        <div class="col-12 col-md-4">
-            <div class="glass-card p-4 text-center">
-                <span class="text-muted small fw-semibold d-block mb-1">Total Exams Completed</span>
-                <h3 class="fw-bold text-dark mb-0">{{ profile.total_exams }}</h3>
+    <!-- Section 2: Performance Summary (4-Column Cards on Desktop, 2-Column on Tablet, Single-Column on Mobile) -->
+    <div class="mb-4">
+        <h4 class="fw-bold text-dark mb-3" style="font-size: 24px; font-weight: 600;"><i class="bi bi-bar-chart-line text-primary me-2"></i> Performance Summary</h4>
+        
+        <div class="row g-4">
+            <!-- Card 1: Total Exams -->
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="glass-card p-4 d-flex flex-column justify-content-between shadow-sm" style="height: 140px; min-height: 140px;">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="text-muted" style="font-size: 18px; font-weight: 600;">Total Exams</span>
+                        <i class="bi bi-journal-check text-primary fs-4"></i>
+                    </div>
+                    <div>
+                        <h2 class="fw-bold text-dark mb-0" style="font-size: 36px; font-weight: 700; line-height: 1;">{{ profile.total_exams }}</h2>
+                        <small class="text-muted" style="font-size: 15px; font-weight: 500;">Simulated tests completed</small>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="col-12 col-md-4">
-            <div class="glass-card p-4 text-center">
-                <span class="text-muted small fw-semibold d-block mb-1">Highest Score Achieved</span>
-                <h3 class="fw-bold text-success mb-0">{{ profile.highest_score }}%</h3>
+
+            <!-- Card 2: Highest Score -->
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="glass-card p-4 d-flex flex-column justify-content-between shadow-sm" style="height: 140px; min-height: 140px;">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="text-muted" style="font-size: 18px; font-weight: 600;">Highest Score</span>
+                        <i class="bi bi-award-fill text-success fs-4"></i>
+                    </div>
+                    <div>
+                        <h2 class="fw-bold text-success mb-0" style="font-size: 36px; font-weight: 700; line-height: 1;">{{ profile.highest_score }}%</h2>
+                        <small class="text-muted" style="font-size: 15px; font-weight: 500;">Personal best score</small>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="col-12 col-md-4">
-            <div class="glass-card p-4 text-center">
-                <span class="text-muted small fw-semibold d-block mb-1">Average Exam Score</span>
-                <h3 class="fw-bold text-primary mb-0">{{ profile.average_score }}%</h3>
+
+            <!-- Card 3: Average Score -->
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="glass-card p-4 d-flex flex-column justify-content-between shadow-sm" style="height: 140px; min-height: 140px;">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="text-muted" style="font-size: 18px; font-weight: 600;">Average Score</span>
+                        <i class="bi bi-graph-up-arrow text-info fs-4"></i>
+                    </div>
+                    <div>
+                        <h2 class="fw-bold text-info mb-0" style="font-size: 36px; font-weight: 700; line-height: 1;">{{ profile.average_score }}%</h2>
+                        <small class="text-muted" style="font-size: 15px; font-weight: 500;">Overall accuracy rate</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Rank Points -->
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="glass-card p-4 d-flex flex-column justify-content-between shadow-sm" style="height: 140px; min-height: 140px;">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="text-muted" style="font-size: 18px; font-weight: 600;">Rank Points</span>
+                        <i class="bi bi-trophy-fill text-warning fs-4"></i>
+                    </div>
+                    <div>
+                        <h2 class="fw-bold text-warning mb-0" style="font-size: 36px; font-weight: 700; line-height: 1;">{{ profile.total_points }}</h2>
+                        <small class="text-muted" style="font-size: 15px; font-weight: 500;">{{ profile.daily_streak }} Day login streak</small>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Profile Details Card -->
-    <div class="glass-card p-4 mb-4">
-        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-person-lines-fill text-primary me-2"></i> Account Details</h5>
-        <div class="row g-3">
-            <div class="col-md-6">
-                <label class="text-muted small">Username</label>
-                <div class="fw-bold text-dark fs-6">{{ user.username }}</div>
+    <!-- Section 3: Account Details (2-Column Responsive Layout with Icons) -->
+    <div class="glass-card p-4 mb-4 shadow-sm" style="padding: 24px !important;">
+        <h4 class="fw-bold text-dark mb-4" style="font-size: 24px; font-weight: 600;"><i class="bi bi-person-lines-fill text-primary me-2"></i> Account Details</h4>
+        
+        <div class="row g-4">
+            <!-- Username -->
+            <div class="col-12 col-md-6">
+                <div class="p-3 bg-light rounded-3 border border-slate-200 d-flex align-items-center gap-3">
+                    <div class="p-2 bg-primary bg-opacity-10 text-primary rounded-circle">
+                        <i class="bi bi-person-fill fs-4"></i>
+                    </div>
+                    <div>
+                        <span class="d-block text-muted" style="font-size: 16px; font-weight: 600;">Username</span>
+                        <span class="text-dark" style="font-size: 18px; font-weight: 600;">{{ user.username }}</span>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-6">
-                <label class="text-muted small">Email Address</label>
-                <div class="fw-bold text-dark fs-6">{{ user.email|default:"Not provided" }}</div>
+
+            <!-- Email Address -->
+            <div class="col-12 col-md-6">
+                <div class="p-3 bg-light rounded-3 border border-slate-200 d-flex align-items-center gap-3">
+                    <div class="p-2 bg-info bg-opacity-10 text-info rounded-circle">
+                        <i class="bi bi-envelope-fill fs-4"></i>
+                    </div>
+                    <div>
+                        <span class="d-block text-muted" style="font-size: 16px; font-weight: 600;">Email Address</span>
+                        <span class="text-dark" style="font-size: 18px; font-weight: 600;">{{ user.email|default:"Not provided" }}</span>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-6">
-                <label class="text-muted small">Phone Number</label>
-                <div class="fw-bold text-dark fs-6">{{ profile.phone|default:"Not provided" }}</div>
+
+            <!-- Phone Number -->
+            <div class="col-12 col-md-6">
+                <div class="p-3 bg-light rounded-3 border border-slate-200 d-flex align-items-center gap-3">
+                    <div class="p-2 bg-success bg-opacity-10 text-success rounded-circle">
+                        <i class="bi bi-telephone-fill fs-4"></i>
+                    </div>
+                    <div>
+                        <span class="d-block text-muted" style="font-size: 16px; font-weight: 600;">Phone Number</span>
+                        <span class="text-dark" style="font-size: 18px; font-weight: 600;">{{ profile.phone|default:"Not provided" }}</span>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-6">
-                <label class="text-muted small">Account Created</label>
-                <div class="fw-bold text-dark fs-6">{{ profile.created_at|date:"F d, Y" }}</div>
+
+            <!-- Date Joined -->
+            <div class="col-12 col-md-6">
+                <div class="p-3 bg-light rounded-3 border border-slate-200 d-flex align-items-center gap-3">
+                    <div class="p-2 bg-warning bg-opacity-10 text-warning rounded-circle">
+                        <i class="bi bi-calendar-check-fill fs-4"></i>
+                    </div>
+                    <div>
+                        <span class="d-block text-muted" style="font-size: 16px; font-weight: 600;">Date Joined</span>
+                        <span class="text-dark" style="font-size: 18px; font-weight: 600;">{{ profile.created_at|date:"F d, Y" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Target Exam -->
+            <div class="col-12 col-md-6">
+                <div class="p-3 bg-light rounded-3 border border-slate-200 d-flex align-items-center gap-3">
+                    <div class="p-2 bg-primary bg-opacity-10 text-primary rounded-circle">
+                        <i class="bi bi-mortarboard-fill fs-4"></i>
+                    </div>
+                    <div>
+                        <span class="d-block text-muted" style="font-size: 16px; font-weight: 600;">Target Goal</span>
+                        <span class="text-dark" style="font-size: 18px; font-weight: 600;">{{ profile.target_exam }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role & Status -->
+            <div class="col-12 col-md-6">
+                <div class="p-3 bg-light rounded-3 border border-slate-200 d-flex align-items-center gap-3">
+                    <div class="p-2 bg-danger bg-opacity-10 text-danger rounded-circle">
+                        <i class="bi bi-shield-check fs-4"></i>
+                    </div>
+                    <div>
+                        <span class="d-block text-muted" style="font-size: 16px; font-weight: 600;">Account Status</span>
+                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-30" style="font-size: 16px; font-weight: 600;">Active Student</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -59,11 +59,11 @@
 
             <!-- Countdown Timer Display & Warn Status -->
             <div class="d-flex align-items-center gap-3">
-                <div class="timer-box" id="timerDisplay">
+                <div class="timer-box exam-timer-text" id="timerDisplay">
                     <i class="bi bi-clock-history"></i> <span id="countdownText">60:00</span>
                 </div>
 
-                <div class="badge bg-warning bg-opacity-20 text-warning border border-warning border-opacity-30 px-3 py-2 rounded-pill fw-semibold" id="violationCountBadge">
+                <div class="badge bg-warning bg-opacity-20 text-warning border border-warning border-opacity-30 px-3 py-2 rounded-pill exam-violation-alert" id="violationCountBadge">
                     0 / 3 Warnings
                 </div>
 
@@ -88,11 +88,11 @@
                                 <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-20 fs-6 fw-semibold" id="qCategoryBadge">Category</span>
                                 <span class="badge bg-secondary bg-opacity-10 text-dark border border-secondary border-opacity-20 ms-2 fw-semibold" id="qDiffBadge">Difficulty</span>
                             </div>
-                            <span class="fw-bold text-muted animate-pulse" id="qNumberTitle">Question 1 of 40</span>
+                            <span class="fw-bold text-muted animate-pulse exam-q-number" id="qNumberTitle">Question 1 of 40</span>
                         </div>
 
-                        <!-- Question Text (Large 21px Font) -->
-                        <h3 class="fw-bold mb-4 text-dark" id="qTextDisplay" style="font-size: 1.35rem; line-height: 1.5;">Loading question...</h3>
+                        <!-- Question Text (Large 24px Font) -->
+                        <h3 class="fw-bold mb-4 text-dark exam-q-text" id="qTextDisplay">Loading question...</h3>
                         
                         <!-- Code Snippet Display -->
                         <div class="d-none mb-4" id="qCodeSnippetBox">
@@ -104,25 +104,25 @@
                             <div class="col-md-6 col-12">
                                 <div class="option-card" onclick="selectOption('A')">
                                     <div class="option-letter">A</div>
-                                    <div class="flex-grow-1 text-dark" id="optAText">Option A</div>
+                                    <div class="flex-grow-1 text-dark exam-option-text" id="optAText">Option A</div>
                                 </div>
                             </div>
                             <div class="col-md-6 col-12">
                                 <div class="option-card" onclick="selectOption('B')">
                                     <div class="option-letter">B</div>
-                                    <div class="flex-grow-1 text-dark" id="optBText">Option B</div>
+                                    <div class="flex-grow-1 text-dark exam-option-text" id="optBText">Option B</div>
                                 </div>
                             </div>
                             <div class="col-md-6 col-12">
                                 <div class="option-card" onclick="selectOption('C')">
                                     <div class="option-letter">C</div>
-                                    <div class="flex-grow-1 text-dark" id="optCText">Option C</div>
+                                    <div class="flex-grow-1 text-dark exam-option-text" id="optCText">Option C</div>
                                 </div>
                             </div>
                             <div class="col-md-6 col-12">
                                 <div class="option-card" onclick="selectOption('D')">
                                     <div class="option-letter">D</div>
-                                    <div class="flex-grow-1 text-dark" id="optDText">Option D</div>
+                                    <div class="flex-grow-1 text-dark exam-option-text" id="optDText">Option D</div>
                                 </div>
                             </div>
                         </div>

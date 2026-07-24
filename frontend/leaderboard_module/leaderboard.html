@@ -7,8 +7,8 @@
     <!-- Header -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom border-slate-200 gap-3">
         <div>
-            <h2 class="fw-bold mb-1"><i class="bi bi-trophy text-warning me-2"></i> Placement Preparation Leaderboard</h2>
-            <p class="text-muted mb-0">Compete with fellow students and boost your placement examination readiness rank.</p>
+            <h2 class="fw-bold mb-1 page-title-lg"><i class="bi bi-trophy text-warning me-2"></i> Placement Preparation Leaderboard</h2>
+            <p class="text-muted mb-0 page-desc-lg">Compete with fellow students and boost your placement examination readiness rank.</p>
         </div>
 
         <!-- Filter Tabs -->
@@ -27,8 +27,8 @@
             <div class="glass-card p-4 text-center border-slate-300">
                 <div class="display-6 text-secondary mb-2"><i class="bi bi-award-fill"></i></div>
                 <span class="badge bg-secondary mb-2 px-3 py-1 fw-semibold">2nd Rank</span>
-                <h5 class="fw-bold text-dark mb-1">{{ leaderboard.1.username }}</h5>
-                <p class="text-primary fw-semibold mb-1">{{ leaderboard.1.points }} Points</p>
+                <h5 class="fw-bold text-dark mb-1 leaderboard-username">{{ leaderboard.1.username }}</h5>
+                <p class="text-primary fw-semibold mb-1 leaderboard-score">{{ leaderboard.1.points }} Points</p>
                 <small class="text-muted">Avg: {{ leaderboard.1.avg_pct }}%</small>
             </div>
         </div>
@@ -38,8 +38,8 @@
             <div class="glass-card p-4 text-center border-warning shadow-lg" style="transform: scale(1.05);">
                 <div class="display-5 text-warning mb-2"><i class="bi bi-trophy-fill"></i></div>
                 <span class="badge bg-warning text-dark fw-bold mb-2 px-3 py-1">🥇 1st Rank Champion</span>
-                <h4 class="fw-bold text-dark mb-1">{{ leaderboard.0.username }}</h4>
-                <p class="text-warning fw-bold fs-5 mb-1">{{ leaderboard.0.points }} Points</p>
+                <h4 class="fw-bold text-dark mb-1 leaderboard-username">{{ leaderboard.0.username }}</h4>
+                <p class="text-warning fw-bold fs-5 mb-1 leaderboard-score">{{ leaderboard.0.points }} Points</p>
                 <small class="text-muted">Avg: {{ leaderboard.0.avg_pct }}% | Streak: {{ leaderboard.0.streak }}d</small>
             </div>
         </div>
@@ -49,8 +49,8 @@
             <div class="glass-card p-4 text-center border-danger border-opacity-30">
                 <div class="display-6 text-danger mb-2"><i class="bi bi-award-fill"></i></div>
                 <span class="badge bg-danger bg-opacity-10 text-danger mb-2 px-3 py-1 fw-semibold">3rd Rank</span>
-                <h5 class="fw-bold text-dark mb-1">{{ leaderboard.2.username }}</h5>
-                <p class="text-primary fw-semibold mb-1">{{ leaderboard.2.points }} Points</p>
+                <h5 class="fw-bold text-dark mb-1 leaderboard-username">{{ leaderboard.2.username }}</h5>
+                <p class="text-primary fw-semibold mb-1 leaderboard-score">{{ leaderboard.2.points }} Points</p>
                 <small class="text-muted">Avg: {{ leaderboard.2.avg_pct }}%</small>
             </div>
         </div>
@@ -59,7 +59,7 @@
 
     <!-- Full Rankings Table -->
     <div class="glass-card p-4">
-        <h5 class="fw-bold mb-3"><i class="bi bi-list-ol text-primary me-2"></i> Rank Listings</h5>
+        <h5 class="fw-bold mb-3 section-title-md"><i class="bi bi-list-ol text-primary me-2"></i> Rank Listings</h5>
         <div class="table-responsive">
             <table class="table table-hover table-clean align-middle mb-0">
                 <thead>
@@ -76,7 +76,7 @@
                 <tbody>
                     {% for item in leaderboard %}
                     <tr class="{% if item.username == user.username %}table-primary bg-primary bg-opacity-10{% endif %}">
-                        <td class="fw-bold fs-5">
+                        <td class="fw-bold leaderboard-rank">
                             {% if item.rank == 1 %}
                             <span class="text-warning"><i class="bi bi-trophy-fill me-1"></i> #1</span>
                             {% elif item.rank == 2 %}
@@ -88,7 +88,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            <span class="fw-bold text-dark">{{ item.username }}</span>
+                            <span class="fw-bold text-dark leaderboard-username">{{ item.username }}</span>
                             {% if item.username == user.username %}
                             <span class="badge bg-primary ms-1">You</span>
                             {% endif %}
@@ -97,7 +97,7 @@
                         <td>{{ item.tests_count }}</td>
                         <td class="fw-bold text-primary">{{ item.avg_pct }}%</td>
                         <td class="fw-bold text-success">{{ item.max_pct }}%</td>
-                        <td class="text-end fw-bold fs-5 text-warning">{{ item.points }} pts</td>
+                        <td class="text-end fw-bold text-warning leaderboard-score">{{ item.points }} pts</td>
                     </tr>
                     {% empty %}
                     <tr>

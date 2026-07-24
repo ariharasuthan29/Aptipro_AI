@@ -10,35 +10,35 @@
             <i class="bi {% if session.percentage >= 60 %}bi-check-circle-fill{% else %}bi-x-circle-fill{% endif %} fs-1"></i>
         </div>
         
-        <h2 class="fw-bold mb-1">
+        <h2 class="fw-bold mb-1 page-title-lg">
             {% if session.percentage >= 60 %}
             <span class="text-success">Passed Examination! 🎉</span>
             {% else %}
             <span class="text-danger">Needs Improvement</span>
             {% endif %}
         </h2>
-        <p class="text-muted mb-4">Exam Mode: {{ session.get_mode_display }} | Date: {{ session.start_time|date:"F d, Y H:i" }}</p>
+        <p class="text-muted mb-4 page-desc-lg">Exam Mode: {{ session.get_mode_display }} | Date: {{ session.start_time|date:"F d, Y H:i" }}</p>
 
         <!-- Big Metric Cards Row -->
         <div class="row g-3 justify-content-center">
             <div class="col-12 col-md-6 col-xl-3">
                 <div class="bg-light p-3 rounded-4 border border-slate-200">
-                    <span class="text-muted small d-block mb-1 fw-semibold">Percentage Score</span>
-                    <h2 class="fw-bold mb-0 {% if session.percentage >= 60 %}text-success{% else %}text-danger{% endif %}">
+                    <span class="card-title-sm d-block mb-1">Percentage Score</span>
+                    <h2 class="fw-bold mb-0 stat-value-lg {% if session.percentage >= 60 %}text-success{% else %}text-danger{% endif %}">
                         {{ session.percentage }}%
                     </h2>
                 </div>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <div class="bg-light p-3 rounded-4 border border-slate-200">
-                    <span class="text-muted small d-block mb-1 fw-semibold">Correct Answers</span>
-                    <h2 class="fw-bold mb-0 text-dark">{{ session.correct_answers_count }} / {{ session.total_questions }}</h2>
+                    <span class="card-title-sm d-block mb-1">Correct Answers</span>
+                    <h2 class="fw-bold mb-0 text-dark stat-value-lg">{{ session.correct_answers_count }} / {{ session.total_questions }}</h2>
                 </div>
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <div class="bg-light p-3 rounded-4 border border-slate-200">
-                    <span class="text-muted small d-block mb-1 fw-semibold">Time Taken</span>
-                    <h2 class="fw-bold mb-0 text-primary">{{ time_taken_min }}m {{ time_taken_sec }}s</h2>
+                    <span class="card-title-sm d-block mb-1">Time Taken</span>
+                    <h2 class="fw-bold mb-0 text-primary stat-value-lg">{{ time_taken_min }}m {{ time_taken_sec }}s</h2>
                 </div>
             </div>
             <div class="col-12 col-md-6 col-xl-3">

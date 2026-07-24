@@ -70,8 +70,8 @@
     <!-- Compact Header -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 pb-2 border-bottom border-slate-200 gap-2">
         <div>
-            <h2 class="fw-bold mb-0" style="font-size: 1.6rem;"><i class="bi bi-journal-code text-primary me-2"></i> Daily Aptitude Practice</h2>
-            <p class="text-muted mb-0 small">Practice questions at your own pace with instant solution explanations.</p>
+            <h2 class="fw-bold mb-0 page-title-lg"><i class="bi bi-journal-code text-primary me-2"></i> Daily Aptitude Practice</h2>
+            <p class="text-muted mb-0 page-desc-lg">Practice questions at your own pace with instant solution explanations.</p>
         </div>
         <a href="{% url 'exam_start' %}" class="btn btn-gradient-primary rounded-pill px-3 py-2 btn-sm fw-semibold">
             <i class="bi bg-shield-lock me-1"></i> Switch to Proctored Exam
@@ -110,21 +110,22 @@
     <form method="POST" action="{% url 'submit_practice' %}">
         {% csrf_token %}
         
-        <div class="d-flex flex-column gap-3">
+        <div class="d-flex flex-column align-items-center">
             {% for q in questions %}
-            <div class="glass-card p-3 p-md-4 w-100 question-card-item" id="practice-card-{{ q.id }}" data-index="{{ forloop.counter0 }}" {% if not forloop.first %}style="display: none;"{% endif %}>
+            <!-- Single Active Card -->
+            <div class="glass-card p-4 practice-question-card w-100 {% if not forloop.first %}d-none{% endif %}" id="practice-card-{{ q.id }}" style="max-width: 900px;">
                 
                 <!-- Hidden fields for submission mapping -->
                 <input type="hidden" name="question_ids" value="{{ q.id }}">
                 <input type="hidden" name="answer_{{ q.id }}" id="answer-input-{{ q.id }}" value="">
 
-                <!-- Metadata Header -->
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-20">
+                <!-- Category & Difficulty Header -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-20 practice-category-label">
                             <i class="bi {{ q.category.icon }} me-1"></i> {{ q.category.name }}
                         </span>
-                        <span class="badge {% if q.difficulty == 'EASY' %}badge-easy{% elif q.difficulty == 'MEDIUM' %}badge-medium{% else %}badge-hard{% endif %}">
+                        <span class="badge {% if q.difficulty == 'EASY' %}badge-easy{% elif q.difficulty == 'MEDIUM' %}badge-medium{% else %}badge-hard{% endif %} ms-1">
                             {{ q.get_difficulty_display }}
                         </span>
                     </div>
@@ -133,7 +134,7 @@
 
                 <!-- Question Text (At the Top) -->
                 <div class="mb-3">
-                    <h4 class="fw-bold text-dark mb-2" style="font-size: 1.25rem; line-height: 1.5;">{{ q.question_text }}</h4>
+                    <h4 class="fw-bold text-dark mb-2 practice-question-text">{{ q.question_text }}</h4>
                     {% if q.code_snippet %}
                     <pre class="bg-light p-3 rounded border border-slate-200 text-primary font-monospace small mb-0"><code>{{ q.code_snippet }}</code></pre>
                     {% endif %}
@@ -143,19 +144,19 @@
                 <div class="d-flex flex-column gap-2 mb-3">
                     <div class="option-card" onclick="selectPracticeOption({{ q.id }}, 'A')">
                         <div class="option-letter" id="letter-{{ q.id }}-A">A</div>
-                        <div class="text-dark">{{ q.option_a }}</div>
+                        <div class="text-dark practice-option-text">{{ q.option_a }}</div>
                     </div>
                     <div class="option-card" onclick="selectPracticeOption({{ q.id }}, 'B')">
                         <div class="option-letter" id="letter-{{ q.id }}-B">B</div>
-                        <div class="text-dark">{{ q.option_b }}</div>
+                        <div class="text-dark practice-option-text">{{ q.option_b }}</div>
                     </div>
                     <div class="option-card" onclick="selectPracticeOption({{ q.id }}, 'C')">
                         <div class="option-letter" id="letter-{{ q.id }}-C">C</div>
-                        <div class="text-dark">{{ q.option_c }}</div>
+                        <div class="text-dark practice-option-text">{{ q.option_c }}</div>
                     </div>
                     <div class="option-card" onclick="selectPracticeOption({{ q.id }}, 'D')">
                         <div class="option-letter" id="letter-{{ q.id }}-D">D</div>
-                        <div class="text-dark">{{ q.option_d }}</div>
+                        <div class="text-dark practice-option-text">{{ q.option_d }}</div>
                     </div>
                 </div>
 

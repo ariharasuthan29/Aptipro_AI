@@ -6,8 +6,8 @@
 <!-- Header Banner -->
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom border-slate-200 gap-3">
     <div>
-        <h2 class="fw-bold mb-1 text-dark">Administrator Control Center</h2>
-        <p class="text-muted mb-0">Overview metrics, question management, student progress, and live security logs.</p>
+        <h2 class="fw-bold mb-1 text-dark page-title-lg">Administrator Control Center</h2>
+        <p class="text-muted mb-0 page-desc-lg">Overview metrics, question management, student progress, and live security logs.</p>
     </div>
 
     <div class="d-flex gap-2">
@@ -25,37 +25,37 @@
     <div class="col-12 col-md-6 col-xl-3">
         <div class="glass-card p-4">
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="text-muted small fw-semibold">Total Students</span>
+                <span class="card-title-sm">Total Students</span>
                 <i class="bi bi-people-fill text-primary fs-4"></i>
             </div>
-            <h3 class="fw-bold mb-0 text-dark">{{ total_students }}</h3>
+            <h3 class="fw-bold mb-0 text-dark stat-value-lg">{{ total_students }}</h3>
         </div>
     </div>
     <div class="col-12 col-md-6 col-xl-3">
         <div class="glass-card p-4">
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="text-muted small fw-semibold">Question Bank</span>
+                <span class="card-title-sm">Question Bank</span>
                 <i class="bi bi-journal-check text-info fs-4"></i>
             </div>
-            <h3 class="fw-bold mb-0 text-info">{{ total_questions }}</h3>
+            <h3 class="fw-bold mb-0 text-info stat-value-lg">{{ total_questions }}</h3>
         </div>
     </div>
     <div class="col-12 col-md-6 col-xl-3">
         <div class="glass-card p-4">
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="text-muted small fw-semibold">Exam Sessions</span>
+                <span class="card-title-sm">Exam Sessions</span>
                 <i class="bi bi-laptop-fill text-success fs-4"></i>
             </div>
-            <h3 class="fw-bold mb-0 text-success">{{ total_exams }}</h3>
+            <h3 class="fw-bold mb-0 text-success stat-value-lg">{{ total_exams }}</h3>
         </div>
     </div>
     <div class="col-12 col-md-6 col-xl-3">
         <div class="glass-card p-4">
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="text-muted small fw-semibold">Proctoring Violations</span>
+                <span class="card-title-sm">Proctoring Violations</span>
                 <i class="bi bi-exclamation-octagon-fill text-danger fs-4"></i>
             </div>
-            <h3 class="fw-bold mb-0 text-danger">{{ total_violations }}</h3>
+            <h3 class="fw-bold mb-0 text-danger stat-value-lg">{{ total_violations }}</h3>
         </div>
     </div>
 </div>
