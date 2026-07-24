@@ -45,65 +45,93 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 /* Global Typography Class Specs */
+/* Global Typography Class Specs */
 .navbar-brand-logo { font-size: 28px !important; font-weight: 700 !important; font-family: 'Poppins', sans-serif !important; }
 .navbar-nav .nav-link { font-size: 16px !important; font-weight: 500 !important; }
 .nav-username { font-size: 16px !important; font-weight: 600 !important; }
 .nav-dropdown-item { font-size: 15px !important; font-weight: 500 !important; }
 .btn-logout-text { font-size: 14px !important; font-weight: 600 !important; }
 
-.page-title-lg { font-size: 36px !important; font-weight: 700 !important; line-height: 1.25 !important; }
-.page-desc-lg { font-size: 18px !important; font-weight: 500 !important; color: #64748b !important; }
-.section-title-md { font-size: 24px !important; font-weight: 600 !important; }
-.sub-header-title { font-size: 24px !important; font-weight: 600 !important; }
+.page-title-lg { font-size: 32px !important; font-weight: 700 !important; line-height: 1.25 !important; }
+.page-desc-lg { font-size: 16px !important; font-weight: 500 !important; color: #64748b !important; }
+.section-title-md { font-size: 22px !important; font-weight: 600 !important; }
+.sub-header-title { font-size: 22px !important; font-weight: 600 !important; }
 
-.card-title-sm { font-size: 16px !important; font-weight: 600 !important; color: #64748b !important; }
-.stat-value-lg { font-size: 32px !important; font-weight: 700 !important; line-height: 1.2 !important; }
-.stat-value-secondary { font-size: 18px !important; font-weight: 600 !important; }
+.card-title-sm { font-size: 15px !important; font-weight: 600 !important; color: #64748b !important; }
+.stat-value-lg { font-size: 28px !important; font-weight: 700 !important; line-height: 1.2 !important; }
+.stat-value-secondary { font-size: 16px !important; font-weight: 600 !important; }
 .card-footer-text { font-size: 14px !important; font-weight: 500 !important; color: #64748b !important; }
 
-.form-label { font-size: 16px !important; font-weight: 600 !important; color: #0f172a; }
-.form-control, .form-select { font-size: 16px !important; font-weight: 500 !important; }
-.form-control::placeholder { font-size: 15px !important; font-weight: 400 !important; }
+.form-label { font-size: 15px !important; font-weight: 600 !important; color: #0f172a; }
+.form-control, .form-select { font-size: 15px !important; font-weight: 500 !important; }
+.form-control::placeholder { font-size: 14px !important; font-weight: 400 !important; }
 .form-validation-msg { font-size: 14px !important; font-weight: 500 !important; }
 
-.btn { font-size: 16px !important; font-weight: 600 !important; }
+.btn { font-size: 15px !important; font-weight: 600 !important; }
 .btn-sm { font-size: 14px !important; font-weight: 600 !important; }
 
-.table th { font-size: 16px !important; font-weight: 600 !important; color: #475569; }
-.table td { font-size: 15px !important; font-weight: 500 !important; }
-.table .btn-action { font-size: 15px !important; font-weight: 600 !important; }
+.table th { font-size: 15px !important; font-weight: 600 !important; color: #475569; }
+.table td { font-size: 14px !important; font-weight: 500 !important; }
+.table .btn-action { font-size: 14px !important; font-weight: 600 !important; }
 
-.practice-question-text { font-size: 22px !important; font-weight: 600 !important; line-height: 1.5 !important; }
-.practice-option-text { font-size: 18px !important; font-weight: 500 !important; }
-.practice-explanation-text { font-size: 17px !important; font-weight: 500 !important; line-height: 1.6 !important; }
-.practice-category-label { font-size: 15px !important; font-weight: 600 !important; }
+.practice-question-text { font-size: 20px !important; font-weight: 600 !important; line-height: 1.5 !important; }
+.practice-option-text { font-size: 16px !important; font-weight: 500 !important; }
+.practice-explanation-text { font-size: 15px !important; font-weight: 500 !important; line-height: 1.6 !important; }
+.practice-category-label { font-size: 14px !important; font-weight: 600 !important; }
 
-.exam-q-number { font-size: 18px !important; font-weight: 600 !important; }
-.exam-q-text { font-size: 24px !important; font-weight: 600 !important; line-height: 1.5 !important; }
-.exam-option-text { font-size: 18px !important; font-weight: 500 !important; }
-.exam-timer-text { font-size: 24px !important; font-weight: 700 !important; }
-.exam-violation-alert { font-size: 16px !important; font-weight: 600 !important; }
+.exam-q-number { font-size: 16px !important; font-weight: 600 !important; }
+.exam-q-text { font-size: 22px !important; font-weight: 600 !important; line-height: 1.5 !important; }
+.exam-option-text { font-size: 16px !important; font-weight: 500 !important; }
+.exam-timer-text { font-size: 22px !important; font-weight: 700 !important; }
+.exam-violation-alert { font-size: 15px !important; font-weight: 600 !important; }
 
-.chart-title-lg { font-size: 24px !important; font-weight: 600 !important; }
-.leaderboard-rank { font-size: 22px !important; font-weight: 700 !important; }
-.leaderboard-username { font-size: 18px !important; font-weight: 600 !important; }
-.leaderboard-score { font-size: 16px !important; font-weight: 600 !important; }
+.chart-title-lg { font-size: 22px !important; font-weight: 600 !important; }
+.leaderboard-rank { font-size: 20px !important; font-weight: 700 !important; }
+.leaderboard-username { font-size: 16px !important; font-weight: 600 !important; }
+.leaderboard-score { font-size: 15px !important; font-weight: 600 !important; }
 
-.admin-nav .nav-link { font-size: 16px !important; font-weight: 500 !important; }
-.admin-stat-value { font-size: 32px !important; font-weight: 700 !important; }
+.admin-nav .nav-link { font-size: 15px !important; font-weight: 500 !important; }
+.admin-stat-value { font-size: 28px !important; font-weight: 700 !important; }
 
-/* Responsive Media Specs */
+/* Responsive Media Specs (320px, 375px, 425px, 768px) */
 @media (max-width: 991.98px) {
-    h1, .page-title-lg { font-size: 30px !important; }
-    h2, .section-title-md, .sub-header-title { font-size: 20px !important; }
+    .split-screen-container {
+        flex-direction: column !important;
+        min-height: auto !important;
+    }
+    .split-left {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        padding: 2.5rem 1.5rem !important;
+        text-align: center !important;
+    }
+    .split-right {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        padding: 2rem 1.25rem !important;
+    }
+    .split-right .glass-card {
+        max-width: 100% !important;
+    }
 }
 
-@media (max-width: 576px) {
-    body { font-size: 15px !important; }
-    .page-title-lg { font-size: 26px !important; }
-    .practice-question-text { font-size: 18px !important; }
-    .exam-q-text { font-size: 18px !important; }
-    .stat-value-lg { font-size: 26px !important; }
+@media (max-width: 768px) {
+    body { font-size: 14px !important; }
+    h1, .page-title-lg { font-size: 24px !important; }
+    h2, .section-title-md, .sub-header-title { font-size: 18px !important; }
+    .stat-value-lg, .admin-stat-value { font-size: 22px !important; }
+    .card-title-sm { font-size: 14px !important; }
+    .practice-question-text, .exam-q-text { font-size: 18px !important; }
+    .practice-option-text, .exam-option-text { font-size: 15px !important; }
+    .btn { font-size: 14px !important; padding: 8px 16px !important; }
+    .btn-sm { font-size: 13px !important; padding: 6px 12px !important; }
+    .navbar-brand-logo { font-size: 22px !important; }
+    .table-responsive { border: 0 !important; }
+}
+
+@media (max-width: 425px) {
+    .container-fluid { padding-left: 12px !important; padding-right: 12px !important; }
+    .glass-card { padding: 16px !important; }
 }
 
 /* Remove excessive white space and container constraints */

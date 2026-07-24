@@ -18,6 +18,13 @@ USE_X_FORWARDED_HOST = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
+# Session & Cookie Persistence Settings
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_AGE = 1209600  # 14 days (2 weeks) persistence
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_HTTPONLY = True
+
 CSRF_TRUSTED_ORIGINS = [
     'https://*.onrender.com',
     'https://aptipro-ai.onrender.com',
