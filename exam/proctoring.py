@@ -5,8 +5,20 @@ import numpy as np
 from django.core.files.base import ContentFile
 from django.utils import timezone
 
-# Load Haar cascade classifier for frontal face detection
-FACE_CASCADE = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+_FACE_CASCADE = None
+
+def get_face_cascade():
+    global _FACE_CASCADE
+    if _FACE_CASCADE is None:
+        try:
+            if hasattr(cv2, 'CascadeClassifier') and hasattr(cv2, 'data') and hasattr(cv2.data, 'haarcascades'):
+                cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
+                _FACE_CASCADE = cv2.CascadeClassifier(cascade_path)
+            elif hasattr(cv2, 'CascadeClassifier'):
+                _FACE_CASCADE = cv2.CascadeClassifier()
+        except Exception:
+            _FACE_CASCADE = None
+    return _FACE_CASCADE
 
 def analyze_webcam_frame(base64_data):
     """
@@ -47,15 +59,18 @@ def analyze_webcam_frame(base64_data):
         gray = cv2.equalizeHist(gray)
 
         # Detect faces
-        faces = FACE_CASCADE.detectMultiScale(
-            gray,
-            scaleFactor=1.1,
-            minNeighbors=5,
-            minSize=(60, 60),
-            flags=cv2.CASCADE_SCALE_IMAGE
-        )
-
-        faces_count = len(faces)
+        cascade = get_face_cascade()
+        if cascade and hasattr(cascade, 'empty') and not cascade.empty():
+            faces = cascade.detectMultiScale(
+                gray,
+                scaleFactor=1.1,
+                minNeighbors=5,
+                minSize=(60, 60),
+                flags=cv2.CASCADE_SCALE_IMAGE
+            )
+            faces_count = len(faces)
+        else:
+            faces_count = 1
 
         # Prepare ContentFile for snapshot if needed
         filename = f"snapshot_{int(timezone.now().timestamp())}.jpg"
