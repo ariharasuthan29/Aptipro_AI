@@ -11,12 +11,22 @@ SECRET_KEY = 'django-insecure-xpgal5*nvrb9=3(hwklq(fqoeq$3mp8)qr1irkepxmc8vq)%0v
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "aptipro-ai.onrender.com",
+    ".onrender.com",
+    "*"
+]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
-CSRF_COOKIE_SECURE = True
+
 SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
 
 # Session & Cookie Persistence Settings
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
@@ -26,8 +36,8 @@ SESSION_SAVE_EVERY_REQUEST = True
 SESSION_COOKIE_HTTPONLY = True
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://*.onrender.com',
     'https://aptipro-ai.onrender.com',
+    'https://*.onrender.com',
     'http://127.0.0.1',
     'http://localhost',
 ]
