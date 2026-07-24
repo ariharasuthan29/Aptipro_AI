@@ -9,16 +9,18 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         self.stdout.write(self.style.NOTICE("Seeding Online Exam System database..."))
 
-        # Create Admin User
+        # Create/Ensure Admin User
+        from exam.models import UserProfile
         admin_user, created = User.objects.get_or_create(username='admin')
-        if created:
-            admin_user.set_password('admin123')
-            admin_user.is_staff = True
-            admin_user.is_superuser = True
-            admin_user.save()
-            self.stdout.write(self.style.SUCCESS("Created superuser 'admin' with password 'admin123'."))
-        else:
-            self.stdout.write(self.style.SUCCESS("Superuser 'admin' already exists."))
+        admin_user.set_password('admin123')
+        admin_user.is_staff = True
+        admin_user.is_superuser = True
+        admin_user.save()
+
+        profile, _ = UserProfile.objects.get_or_create(user=admin_user)
+        profile.role = UserProfile.ROLE_ADMIN
+        profile.save()
+        self.stdout.write(self.style.SUCCESS("Ensured superuser 'admin' with password 'admin123' and role 'ADMIN'."))
 
         # Categories list
         categories_data = [
