@@ -19,11 +19,17 @@ ALLOWED_HOSTS = [
     "*"
 ]
 
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
 
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+IS_PRODUCTION = 'DATABASE_URL' in os.environ or 'RENDER' in os.environ
+
+SESSION_COOKIE_SECURE = IS_PRODUCTION
+CSRF_COOKIE_SECURE = IS_PRODUCTION
 
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
@@ -41,6 +47,9 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1',
     'http://localhost',
 ]
+
+if RENDER_EXTERNAL_HOSTNAME:
+    CSRF_TRUSTED_ORIGINS.append(f"https://{RENDER_EXTERNAL_HOSTNAME}")
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -92,16 +101,21 @@ TEMPLATES = [
     },
 ]
 
-try:
+WSGI_APPLICATION = 'OnlineExamSystem.wsgi.application'
+
+# Database Configuration (PostgreSQL in Production, SQLite for Local Dev)
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
     import dj_database_url
     DATABASES = {
         'default': dj_database_url.config(
-            default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+            default=DATABASE_URL,
             conn_max_age=600,
             conn_health_checks=True,
         )
     }
-except ImportError:
+else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
