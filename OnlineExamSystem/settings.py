@@ -107,17 +107,21 @@ TEMPLATES = [
 WSGI_APPLICATION = 'OnlineExamSystem.wsgi.application'
 
 # Database Configuration (PostgreSQL in Production, SQLite for Local Dev)
-DATABASE_URL = os.environ.get('DATABASE_URL')
+DATABASE_URL = os.environ.get('DATABASE_URL', '').strip()
 
 if DATABASE_URL:
     import dj_database_url
+    if DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    
     DATABASES = {
-        'default': dj_database_url.config(
-            default=DATABASE_URL,
+        'default': dj_database_url.parse(
+            DATABASE_URL,
             conn_max_age=600,
             conn_health_checks=True,
         )
     }
+    print("DATABASE ENGINE: PostgreSQL (Connected via DATABASE_URL)")
 else:
     DATABASES = {
         'default': {
@@ -125,6 +129,7 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+    print("DATABASE ENGINE: SQLite (Local Development)")
 
 AUTH_PASSWORD_VALIDATORS = [
     {
